@@ -1,0 +1,19 @@
+{
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "endOfLine": "auto",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "semi": true,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": ["*.json", "*.yaml", "*.yml", ".eslintrc"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
+}

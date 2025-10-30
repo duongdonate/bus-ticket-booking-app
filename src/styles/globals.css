@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base */
+    /* Base */
+    --background: theme(colors.gray.100);
+    --background-hover: theme(colors.gray.200);
+    --foreground: theme(colors.gray.900);
+    --foreground-hover: theme(colors.gray.800);
+
+    /* Surface (card, popover) */
+    --card: theme(colors.gray.100);
+    --card-foreground: theme(colors.gray.900);
+    --popover: theme(colors.gray.300);
+    --popover-foreground: theme(colors.gray.800);
+
+    /* Primary / Secondary */
+    --primary: #ff5500;
+    --primary-hover: #eb4700;
+    --primary-foreground: #ffffff;
+
+    --secondary: #006633;
+    --secondary-foreground: #ffffff;
+
+    /* Muted / Accent */
+    --muted: theme(colors.gray.200);
+    --muted-foreground: theme(colors.gray.400);
+    --accent: #ffcc00;
+    --accent-foreground: #333333;
+
+    /* States */
+    --destructive: #cc0000;
+    --destructive-foreground: #ffffff;
+    --border: #dddddd;
+    --input: #ffffff;
+    --ring: #006633;
+
+    /* Chart / Data colors */
+    --chart-1: #ff5500; /* primary */
+    --chart-2: #006633; /* secondary */
+    --chart-3: #ffcc00; /* accent */
+    --chart-4: #0099ff;
+    --chart-5: #9933ff;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+  .dark {
+    /* Base */
+    --background: theme(colors.gray.900);
+    --background-hover: theme(colors.gray.800);
+    --foreground: theme(colors.gray.100);
+    --foreground-hover: theme(colors.gray.200);
+
+    /* Surface (card, popover) */
+    --card: theme(colors.gray.900);
+    --card-foreground: theme(colors.gray.100);
+    --popover: theme(colors.gray.700);
+    --popover-foreground: theme(colors.gray.200);
+
+    /* Primary / Secondary */
+    --primary: #ff6b1a;
+    --primary-hover: #d95000;
+    --primary-foreground: #ffffff;
+
+    --secondary: #00a85a;
+    --secondary-foreground: #ffffff;
+
+    /* Muted / Accent */
+    --muted: theme(colors.gray.600);
+    --muted-foreground: theme(colors.gray.200);
+    --accent: #ffcc00;
+    --accent-foreground: #222222;
+
+    /* States */
+    --destructive: #ff3b3b;
+    --destructive-foreground: #ffffff;
+    --border: #333333;
+    --input: theme(colors.gray.700);
+    --ring: #00a85a;
+
+    /* Chart / Data colors */
+    --chart-1: #ff6b1a;
+    --chart-2: #00a85a;
+    --chart-3: #ffcc00;
+    --chart-4: #3fa9f5;
+    --chart-5: #9b59b6;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.loader {
+  --dim: 3rem;
+  width: var(--dim);
+  height: var(--dim);
+  position: relative;
+  animation: spin988 2s linear infinite;
+}
+
+.loader .circle {
+  --color: var(--primary);
+  --dim: 1.2rem;
+  width: var(--dim);
+  height: var(--dim);
+  background-color: var(--color);
+  border-radius: 50%;
+  position: absolute;
+}
+
+.loader .circle:nth-child(1) {
+  top: 0;
+  left: 0;
+}
+
+.loader .circle:nth-child(2) {
+  top: 0;
+  right: 0;
+}
+
+.loader .circle:nth-child(3) {
+  bottom: 0;
+  left: 0;
+}
+
+.loader .circle:nth-child(4) {
+  bottom: 0;
+  right: 0;
+}
+
+@keyframes spin988 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+
+  20%,
+  25% {
+    transform: scale(1.3) rotate(90deg);
+  }
+
+  45%,
+  50% {
+    transform: scale(1) rotate(180deg);
+  }
+
+  70%,
+  75% {
+    transform: scale(1.3) rotate(270deg);
+  }
+
+  95%,
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+.hiddenScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hiddenScrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.glass {
+  @apply bg-clip-padding backdrop-filter border border-transparent shadow-xl backdrop-blur-sm;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(-20%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer utilities {
+  .animation-marquee {
+    animation: marquee 8s linear infinite;
+    padding-right: 100%;
+  }
+}
+@layer utilities {
+  input {
+    background-color: var(--input);
+  }
+}
