@@ -5,73 +5,73 @@
 @layer base {
   :root {
     /* Base */
-    /* Base */
     --background: theme(colors.gray.100);
-    --background-hover: theme(colors.gray.200);
+    --background-hover: theme(colors.gray.300);
     --foreground: theme(colors.gray.900);
     --foreground-hover: theme(colors.gray.800);
 
     /* Surface (card, popover) */
-    --card: theme(colors.gray.100);
+    --card: theme(colors.white);
     --card-foreground: theme(colors.gray.900);
-    --popover: theme(colors.gray.300);
-    --popover-foreground: theme(colors.gray.800);
+    --popover: theme(colors.white);
+    --popover-foreground: theme(colors.gray.900);
 
     /* Primary / Secondary */
-    --primary: #ff5500;
-    --primary-hover: #eb4700;
-    --primary-foreground: #ffffff;
+    --primary: theme(colors.orange.600);
+    --primary-hover: theme(colors.orange.500);
+    --primary-foreground: theme(colors.white);
 
-    --secondary: #006633;
-    --secondary-foreground: #ffffff;
+    --secondary: theme(colors.gray.300);
+    --secondary-foreground: theme(colors.gray.800);
 
     /* Muted / Accent */
-    --muted: theme(colors.gray.200);
-    --muted-foreground: theme(colors.gray.400);
-    --accent: #ffcc00;
-    --accent-foreground: #333333;
+    --muted: theme(colors.gray.300);
+    --muted-foreground: theme(colors.gray.500);
+    --accent: theme(colors.gray.200);
+    --accent-foreground: theme(colors.gray.800);
 
     /* States */
-    --destructive: #cc0000;
-    --destructive-foreground: #ffffff;
-    --border: #dddddd;
-    --input: #ffffff;
-    --ring: #006633;
+    --destructive: theme(colors.red.600);
+    --destructive-foreground: theme(colors.white);
+    --border: theme(colors.gray.300);
+    --input: theme(colors.gray.100);
+    --ring: theme(colors.orange.500);
 
     /* Chart / Data colors */
     --chart-1: #ff5500; /* primary */
     --chart-2: #006633; /* secondary */
-    --chart-3: #ffcc00; /* accent */
+    --chart-3: #ffcc00;
     --chart-4: #0099ff;
     --chart-5: #9933ff;
 
     /* Radius */
     --radius: 0.5rem;
   }
+
   .dark {
     /* Base */
-    --background: theme(colors.gray.900);
-    --background-hover: theme(colors.gray.800);
-    --foreground: theme(colors.gray.100);
-    --foreground-hover: theme(colors.gray.200);
+    --background: #0d0d0d;
+    --background-hover: #1a1a1a;
+    --foreground: #f5f5f5;
+    --foreground-hover: #ffffff;
 
     /* Surface (card, popover) */
-    --card: theme(colors.gray.900);
-    --card-foreground: theme(colors.gray.100);
-    --popover: theme(colors.gray.700);
-    --popover-foreground: theme(colors.gray.200);
+    --card: #1a1a1a;
+    --card-foreground: #f5f5f5;
+    --popover: #2a2a2a;
+    --popover-foreground: #e0e0e0;
 
     /* Primary / Secondary */
     --primary: #ff6b1a;
-    --primary-hover: #d95000;
+    --primary-hover: #ff7f33;
     --primary-foreground: #ffffff;
 
     --secondary: #00a85a;
     --secondary-foreground: #ffffff;
 
     /* Muted / Accent */
-    --muted: theme(colors.gray.600);
-    --muted-foreground: theme(colors.gray.200);
+    --muted: #333333;
+    --muted-foreground: #aaaaaa;
     --accent: #ffcc00;
     --accent-foreground: #222222;
 
@@ -79,7 +79,7 @@
     --destructive: #ff3b3b;
     --destructive-foreground: #ffffff;
     --border: #333333;
-    --input: theme(colors.gray.700);
+    --input: #1a1a1a;
     --ring: #00a85a;
 
     /* Chart / Data colors */
@@ -91,6 +91,56 @@
 
     /* Radius */
     --radius: 0.5rem;
+  }
+}
+
+@theme inline {
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply font-normal;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 

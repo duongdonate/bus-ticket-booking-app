@@ -25,7 +25,6 @@ module.exports = {
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
-          hover: "var(--primary-hover)",
         },
         secondary: {
           DEFAULT: "var(--secondary)",
@@ -79,4 +78,7 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
+  experimental: {
+    applyComplexClasses: true,
+  },
 };

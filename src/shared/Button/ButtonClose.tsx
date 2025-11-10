@@ -1,4 +1,4 @@
-import { LuX } from "react-icons/lu";
+import { X } from "lucide-react";
 import React from "react";
 
 export interface ButtonCloseProps {
@@ -19,7 +19,7 @@ const ButtonClose: React.FC<ButtonCloseProps> = ({
       type="button"
     >
       <span className="sr-only">Close</span>
-      <LuX className={IconclassName} />
+      <X className={IconclassName} />
     </button>
   );
 };

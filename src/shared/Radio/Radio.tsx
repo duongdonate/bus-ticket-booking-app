@@ -21,7 +21,7 @@ const Radio: FC<RadioProps> = ({
   defaultChecked,
 }) => {
   return (
-    <div className={`flex items-center text-sm sm:text-base ${className}`}>
+    <div className={`flex items-center text-sm sm:text-sm ${className}`}>
       <input
         id={id}
         name={name}

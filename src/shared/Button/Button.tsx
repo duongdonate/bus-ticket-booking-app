@@ -22,7 +22,7 @@ const Button: FC<ButtonProps> = ({
   className = "text-foreground disabled:cursor-not-allowed",
   translate = "",
   sizeClass = "py-3 px-4 sm:py-3.5 sm:px-6",
-  fontSize = "text-sm sm:text-base font-medium",
+  fontSize = "text-sm sm:text-sm font-medium",
   disabled = false,
   href,
   children,
@@ -30,7 +30,7 @@ const Button: FC<ButtonProps> = ({
   loading,
   onClick = () => {},
 }) => {
-  const CLASSES = `relative h-auto inline-flex items-center justify-center rounded-full active:scale-95 transition-all ${fontSize} ${sizeClass} ${translate} ${className}`;
+  const CLASSES = `relative h-auto inline-flex items-center justify-center rounded-full active:scale-95 hover:scale-105 transition-all ${fontSize} ${sizeClass} ${translate} ${className}`;
 
   const renderLoading = () => {
     return (
