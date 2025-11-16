@@ -12,14 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/date-picker";
 import { Pencil, Camera } from "lucide-react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 interface ProfileData {
   fullName: string;
   phone: string;
   gender: string;
   email: string;
-  birthDate: string;
+  birthDate: Date | undefined;
   address: string;
   occupation: string;
 }
@@ -30,7 +33,7 @@ export default function ThongTinChungPage() {
     phone: "0903947590",
     gender: "Nam",
     email: "nghiatran0309@gmail.com",
-    birthDate: "2004-09-03",
+    birthDate: new Date(2004, 8, 3),
     address: "",
     occupation: "",
   });
@@ -39,7 +42,7 @@ export default function ThongTinChungPage() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>("/placeholder-avatar.jpg");
 
-  const handleInputChange = (field: keyof ProfileData, value: string) => {
+  const handleInputChange = (field: keyof ProfileData, value: string | Date | undefined) => {
     if (isEditing) {
       setProfileData((prev) => ({
         ...prev,
@@ -57,7 +60,7 @@ export default function ThongTinChungPage() {
         return;
       }
 
-      // Check file type
+
       if (!file.type.match(/image\/(jpeg|jpg|png)/)) {
         alert("Chỉ chấp nhận định dạng JPEG, PNG");
         return;
@@ -79,21 +82,15 @@ export default function ThongTinChungPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: Implement API call to update profile
-    console.log("Profile updated:", profileData);
-    console.log("Avatar file:", avatarFile);
-    
     // Show success message
     alert("Cập nhật thông tin thành công!");
     
-    // Disable editing mode
     setIsEditing(false);
   };
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    const [year, month, day] = dateString.split("-");
-    return `${day}/${month}/${year}`;
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "-";
+    return format(date, "dd/MM/yyyy", { locale: vi });
   };
 
   return (
@@ -232,12 +229,12 @@ export default function ThongTinChungPage() {
                 <Label className="w-28 text-gray-700 text-sm">Ngày sinh</Label>
                 <span className="mx-2">:</span>
                 {isEditing ? (
-                  <Input
-                    value={profileData.birthDate}
-                    onChange={(e) => handleInputChange("birthDate", e.target.value)}
-                    className="flex-1 h-9 text-sm"
-                    type="date"
-                  />
+                  <div className="flex-1">
+                    <DatePicker
+                      value={profileData.birthDate}
+                      onChange={(date) => handleInputChange("birthDate", date)}
+                    />
+                  </div>
                 ) : (
                   <span className="flex-1 text-sm">{formatDate(profileData.birthDate)}</span>
                 )}

@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Download, MapPin, User, CreditCard, X } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 interface BookingDetail {
   id: string;
   ticketCode: string;
-  bookingDate: string;
+  bookingDate: Date;
   bookingTime: string;
   status: "confirmed" | "cancelled" | "completed";
   paymentStatus: "paid" | "pending" | "failed";
@@ -28,7 +30,7 @@ interface BookingDetail {
       from: string;
       to: string;
     };
-    departureDate: string;
+    departureDate: Date;
     departureTime: string;
     arrivalTime: string;
     duration: string;
@@ -67,6 +69,14 @@ export function BookingDetailModal({
   onCancel,
 }: BookingDetailModalProps) {
   if (!booking) return null;
+
+  const formatDate = (date: Date) => {
+    return format(date, "dd/MM/yyyy", { locale: vi });
+  };
+
+  const formatDateTime = (date: Date, time: string) => {
+    return `${time} ${formatDate(date)}`;
+  };
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -153,7 +163,7 @@ export function BookingDetailModal({
               <div className="text-right">
                 <p className="text-sm text-gray-600">Ngày đặt vé</p>
                 <p className="text-base font-semibold">
-                  {booking.bookingTime} {booking.bookingDate}
+                  {formatDateTime(booking.bookingDate, booking.bookingTime)}
                 </p>
               </div>
             </div>
@@ -189,7 +199,7 @@ export function BookingDetailModal({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Ngày đi</p>
-                      <p className="text-base font-semibold">{booking.trip.departureDate}</p>
+                      <p className="text-base font-semibold">{formatDate(booking.trip.departureDate)}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Thời gian</p>

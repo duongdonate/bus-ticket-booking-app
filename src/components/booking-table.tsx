@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 interface Booking {
   id: string;
@@ -10,7 +12,7 @@ interface Booking {
     from: string;
     to: string;
   };
-  departureDate: string;
+  departureDate: Date;
   departureTime: string;
   amount: number;
   paymentStatus: "paid" | "pending" | "failed";
@@ -71,6 +73,10 @@ export function BookingTable({
       default:
         return "text-gray-600";
     }
+  };
+
+  const formatDateTime = (date: Date, time: string) => {
+    return `${time} ${format(date, "dd/MM/yyyy", { locale: vi })}`;
   };
 
   return (
@@ -154,7 +160,7 @@ export function BookingTable({
                     {booking.route.from} - {booking.route.to}
                   </td>
                   <td className="px-6 py-5 text-sm whitespace-nowrap">
-                    {booking.departureTime} {booking.departureDate}
+                    {formatDateTime(booking.departureDate, booking.departureTime)}
                   </td>
                   <td className="px-6 py-5 font-semibold text-sm whitespace-nowrap">
                     {booking.amount.toLocaleString("vi-VN")}đ

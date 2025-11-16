@@ -9,18 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/date-picker";
 import { Ticket } from "lucide-react";
 
 interface Filters {
   ticketCode: string;
-  date: string;
+  date: Date | undefined;
   route: string;
   status: string;
 }
 
 interface BookingFiltersProps {
   filters: Filters;
-  onFilterChange: (field: keyof Filters, value: string) => void;
+  onFilterChange: (field: keyof Filters, value: string | Date | undefined) => void;
   onSearch: () => void;
   onReset: () => void;
   isLoading?: boolean;
@@ -51,15 +52,10 @@ export function BookingFilters({
 
         <div>
           <label className="text-sm font-medium mb-2 block text-gray-700">Thời gian</label>
-          <div className="relative">
-            <Input
-              type="date"
-              placeholder="Select date"
-              value={filters.date}
-              onChange={(e) => onFilterChange("date", e.target.value)}
-              className="h-10 text-sm border-gray-300"
-            />
-          </div>
+          <DatePicker
+            value={filters.date}
+            onChange={(date) => onFilterChange("date", date)}
+          />
         </div>
 
         <div>

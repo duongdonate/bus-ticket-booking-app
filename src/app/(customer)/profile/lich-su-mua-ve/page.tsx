@@ -7,10 +7,11 @@ import { BookingFilters } from "@/components/booking-filters";
 import { BookingTable } from "@/components/booking-table";
 import { BookingDetailModal } from "@/components/booking-detail";
 import { mockBookings, mockBookingDetails } from "./mock-data";
+import { isSameDay } from "date-fns";
 
 interface Filters {
   ticketCode: string;
-  date: string;
+  date: Date | undefined;
   route: string;
   status: string;
 }
@@ -18,7 +19,7 @@ interface Filters {
 export default function LichSuMuaVePage() {
   const [filters, setFilters] = useState<Filters>({
     ticketCode: "",
-    date: "",
+    date: undefined,
     route: "",
     status: "all",
   });
@@ -29,7 +30,7 @@ export default function LichSuMuaVePage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<typeof mockBookingDetails[string] | null>(null);
 
-  const handleFilterChange = (field: keyof Filters, value: string) => {
+  const handleFilterChange = (field: keyof Filters, value: string | Date | undefined) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -48,9 +49,9 @@ export default function LichSuMuaVePage() {
       }
 
       if (filters.date) {
-        const [year, month, day] = filters.date.split("-");
-        const formattedDate = `${day}/${month}/${year}`;
-        filtered = filtered.filter((booking) => booking.departureDate === formattedDate);
+        filtered = filtered.filter((booking) => 
+          isSameDay(booking.departureDate, filters.date!)
+        );
       }
 
       if (filters.route) {
@@ -75,7 +76,7 @@ export default function LichSuMuaVePage() {
   const handleReset = () => {
     setFilters({
       ticketCode: "",
-      date: "",
+      date: undefined,
       route: "",
       status: "all",
     });

@@ -6,7 +6,7 @@ export interface Booking {
     from: string;
     to: string;
   };
-  departureDate: string;
+  departureDate: Date;
   departureTime: string;
   amount: number;
   paymentStatus: "paid" | "pending" | "failed";
@@ -16,7 +16,7 @@ export interface Booking {
 export interface BookingDetail {
   id: string;
   ticketCode: string;
-  bookingDate: string;
+  bookingDate: Date;
   bookingTime: string;
   status: "confirmed" | "cancelled" | "completed";
   paymentStatus: "paid" | "pending" | "failed";
@@ -37,7 +37,7 @@ export interface BookingDetail {
       from: string;
       to: string;
     };
-    departureDate: string;
+    departureDate: Date;
     departureTime: string;
     arrivalTime: string;
     duration: string;
@@ -67,7 +67,7 @@ export const mockBookings: Booking[] = [
       from: "TP. Hồ Chí Minh",
       to: "Đà Lạt",
     },
-    departureDate: "15/11/2024",
+    departureDate: new Date(2024, 10, 15), // 15/11/2024
     departureTime: "08:00",
     amount: 500000,
     paymentStatus: "paid",
@@ -81,7 +81,7 @@ export const mockBookings: Booking[] = [
       from: "Hà Nội",
       to: "Hải Phòng",
     },
-    departureDate: "10/11/2024",
+    departureDate: new Date(2024, 10, 10), // 10/11/2024
     departureTime: "14:30",
     amount: 250000,
     paymentStatus: "paid",
@@ -95,7 +95,7 @@ export const mockBookings: Booking[] = [
       from: "Đà Nẵng",
       to: "Nha Trang",
     },
-    departureDate: "20/11/2024",
+    departureDate: new Date(2024, 10, 20), // 20/11/2024
     departureTime: "06:00",
     amount: 750000,
     paymentStatus: "pending",
@@ -109,7 +109,7 @@ export const mockBookings: Booking[] = [
       from: "TP. Hồ Chí Minh",
       to: "Vũng Tàu",
     },
-    departureDate: "05/11/2024",
+    departureDate: new Date(2024, 10, 5), // 05/11/2024
     departureTime: "10:00",
     amount: 200000,
     paymentStatus: "paid",
@@ -123,7 +123,7 @@ export const mockBookings: Booking[] = [
       from: "Huế",
       to: "Đà Nẵng",
     },
-    departureDate: "25/11/2024",
+    departureDate: new Date(2024, 10, 25), // 25/11/2024
     departureTime: "16:00",
     amount: 300000,
     paymentStatus: "failed",
@@ -137,7 +137,7 @@ export const mockBookings: Booking[] = [
       from: "Cần Thơ",
       to: "TP. Hồ Chí Minh",
     },
-    departureDate: "12/11/2024",
+    departureDate: new Date(2024, 10, 12), // 12/11/2024
     departureTime: "07:30",
     amount: 180000,
     paymentStatus: "paid",
@@ -149,7 +149,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "1": {
     id: "1",
     ticketCode: "VE001234",
-    bookingDate: "10/11/2024",
+    bookingDate: new Date(2024, 10, 10), // 10/11/2024
     bookingTime: "14:30",
     status: "confirmed",
     paymentStatus: "paid",
@@ -170,7 +170,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "TP. Hồ Chí Minh",
         to: "Đà Lạt",
       },
-      departureDate: "15/11/2024",
+      departureDate: new Date(2024, 10, 15), // 15/11/2024
       departureTime: "08:00",
       arrivalTime: "14:00",
       duration: "6 giờ",
@@ -193,7 +193,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "2": {
     id: "2",
     ticketCode: "VE001235",
-    bookingDate: "08/11/2024",
+    bookingDate: new Date(2024, 10, 8), // 08/11/2024
     bookingTime: "10:15",
     status: "completed",
     paymentStatus: "paid",
@@ -214,7 +214,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "Hà Nội",
         to: "Hải Phòng",
       },
-      departureDate: "10/11/2024",
+      departureDate: new Date(2024, 10, 10), // 10/11/2024
       departureTime: "14:30",
       arrivalTime: "16:30",
       duration: "2 giờ",
@@ -236,7 +236,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "3": {
     id: "3",
     ticketCode: "VE001236",
-    bookingDate: "18/11/2024",
+    bookingDate: new Date(2024, 10, 18), // 18/11/2024
     bookingTime: "09:45",
     status: "confirmed",
     paymentStatus: "pending",
@@ -257,7 +257,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "Đà Nẵng",
         to: "Nha Trang",
       },
-      departureDate: "20/11/2024",
+      departureDate: new Date(2024, 10, 20), // 20/11/2024
       departureTime: "06:00",
       arrivalTime: "16:00",
       duration: "10 giờ",
@@ -281,7 +281,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "4": {
     id: "4",
     ticketCode: "VE001237",
-    bookingDate: "03/11/2024",
+    bookingDate: new Date(2024, 10, 3), // 03/11/2024
     bookingTime: "16:20",
     status: "cancelled",
     paymentStatus: "paid",
@@ -302,7 +302,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "TP. Hồ Chí Minh",
         to: "Vũng Tàu",
       },
-      departureDate: "05/11/2024",
+      departureDate: new Date(2024, 10, 5), // 05/11/2024
       departureTime: "10:00",
       arrivalTime: "12:00",
       duration: "2 giờ",
@@ -324,7 +324,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "5": {
     id: "5",
     ticketCode: "VE001238",
-    bookingDate: "23/11/2024",
+    bookingDate: new Date(2024, 10, 23), // 23/11/2024
     bookingTime: "11:30",
     status: "cancelled",
     paymentStatus: "failed",
@@ -345,7 +345,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "Huế",
         to: "Đà Nẵng",
       },
-      departureDate: "25/11/2024",
+      departureDate: new Date(2024, 10, 25), // 25/11/2024
       departureTime: "16:00",
       arrivalTime: "19:00",
       duration: "3 giờ",
@@ -368,7 +368,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
   "6": {
     id: "6",
     ticketCode: "VE001239",
-    bookingDate: "10/11/2024",
+    bookingDate: new Date(2024, 10, 10), // 10/11/2024
     bookingTime: "08:00",
     status: "completed",
     paymentStatus: "paid",
@@ -389,7 +389,7 @@ export const mockBookingDetails: { [key: string]: BookingDetail } = {
         from: "Cần Thơ",
         to: "TP. Hồ Chí Minh",
       },
-      departureDate: "12/11/2024",
+      departureDate: new Date(2024, 10, 12), // 12/11/2024
       departureTime: "07:30",
       arrivalTime: "11:00",
       duration: "3.5 giờ",
