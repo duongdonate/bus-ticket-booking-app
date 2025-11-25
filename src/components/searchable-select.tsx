@@ -13,6 +13,7 @@ export interface Option {
 }
 
 interface SearchableSelectProps {
+  id?: string;
   options: Option[];
   placeholder?: string;
   value?: string;
@@ -20,6 +21,7 @@ interface SearchableSelectProps {
 }
 
 export function SearchableSelect({
+  id,
   options,
   placeholder = "Chọn mục...",
   value,
@@ -50,12 +52,12 @@ export function SearchableSelect({
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+      <Popover.Trigger asChild id={id}>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-64 justify-between"
+          className="min-w-32 w-full justify-between"
         >
           {selected ? selected.label : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />

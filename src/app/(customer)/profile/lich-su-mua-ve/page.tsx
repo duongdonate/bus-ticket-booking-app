@@ -1,92 +1,93 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { BookingFilters } from "@/components/booking-filters";
-import { BookingTable } from "@/components/booking-table";
-import { BookingDetailModal } from "@/components/booking-detail";
+import { TicketFilters, Filters } from "@/components/ticket-filters";
+import { TicketDetailModal } from "@/components/ticket-detail";
 import { mockBookings, mockBookingDetails } from "./mock-data";
 import { isSameDay } from "date-fns";
+import PageController from "@/components/page-controller";
+import { TicketTable } from "@/components/ticket-table";
+import { useEffect, useState } from "react";
 
-interface Filters {
-  ticketCode: string;
-  date: Date | undefined;
-  route: string;
-  status: string;
-}
+import { useQuery } from "@tanstack/react-query";
+import { ticketApi } from "@/services/ticketService";
+import { Ticket } from "@/types/Ticket";
+import { TicketResult } from "@/components/ticket-results";
 
 export default function LichSuMuaVePage() {
-  const [filters, setFilters] = useState<Filters>({
-    ticketCode: "",
-    date: undefined,
-    route: "",
-    status: "all",
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [size, setSize] = useState(10);
+
+  const { data, isLoading, isFetching, isError } = useQuery({
+    queryKey: ["my-tickets", page, size],
+    queryFn: () => ticketApi.getAllTickets(page, size),
   });
 
-  const [filteredBookings, setFilteredBookings] = useState(mockBookings);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<typeof mockBookingDetails[string] | null>(null);
-
-  const handleFilterChange = (field: keyof Filters, value: string | Date | undefined) => {
-    setFilters((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSearch = async () => {
-    setIsLoading(true);
-    
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      
-      let filtered = mockBookings;
-
-      if (filters.ticketCode) {
-        filtered = filtered.filter((booking) =>
-          booking.ticketCode.toLowerCase().includes(filters.ticketCode.toLowerCase())
-        );
-      }
-
-      if (filters.date) {
-        filtered = filtered.filter((booking) => 
-          isSameDay(booking.departureDate, filters.date!)
-        );
-      }
-
-      if (filters.route) {
-        filtered = filtered.filter((booking) =>
-          booking.route.from.toLowerCase().includes(filters.route.toLowerCase()) ||
-          booking.route.to.toLowerCase().includes(filters.route.toLowerCase())
-        );
-      }
-
-      if (filters.status !== "all") {
-        filtered = filtered.filter((booking) => booking.bookingStatus === filters.status);
-      }
-
-      setFilteredBookings(filtered);
-    } catch (error) {
-      console.error("Error searching bookings:", error);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    console.log("Fetched My Tickets Data:", data?.data);
+    if (data) {
+      setTotalPages(data.data.totalPages);
     }
-  };
+  }, [data]);
 
-  const handleReset = () => {
-    setFilters({
-      ticketCode: "",
-      date: undefined,
-      route: "",
-      status: "all",
-    });
-    setFilteredBookings(mockBookings);
-  };
+  useEffect(() => {
+    console.log("Current Page changed to:", page);
+  }, [page]);
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedTicketId, setSelectedTicketId] = useState<string>("");
+
+  // const handleSearch = async () => {
+  //   setIsLoading(true);
+
+  //   try {
+  //     await new Promise((resolve) => setTimeout(resolve, 500));
+
+  //     let filtered = mockBookings;
+
+  //     if (filters.ticketCode) {
+  //       filtered = filtered.filter((booking) =>
+  //         booking.ticketCode
+  //           .toLowerCase()
+  //           .includes(filters.ticketCode.toLowerCase())
+  //       );
+  //     }
+
+  //     if (filters.date) {
+  //       filtered = filtered.filter((booking) =>
+  //         isSameDay(booking.departureDate, filters.date!)
+  //       );
+  //     }
+
+  //     if (filters.route) {
+  //       filtered = filtered.filter(
+  //         (booking) =>
+  //           booking.route.from
+  //             .toLowerCase()
+  //             .includes(filters.route.toLowerCase()) ||
+  //           booking.route.to.toLowerCase().includes(filters.route.toLowerCase())
+  //       );
+  //     }
+
+  //     if (filters.status !== "all") {
+  //       filtered = filtered.filter(
+  //         (booking) => booking.bookingStatus === filters.status
+  //       );
+  //     }
+
+  //     setFilteredBookings(filtered);
+  //   } catch (error) {
+  //     console.error("Error searching bookings:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleViewDetail = (bookingId: string) => {
     const bookingDetail = mockBookingDetails[bookingId];
     if (bookingDetail) {
-      setSelectedBooking(bookingDetail);
       setIsDetailOpen(true);
     } else {
       alert("Không tìm thấy thông tin vé");
@@ -109,46 +110,41 @@ export default function LichSuMuaVePage() {
   };
 
   return (
-    <div>
+    <>
       {/* Header */}
-      <div className="flex justify-between items-start mb-4">
+      <div className="w-full flex justify-between items-start mb-4">
         <div>
           <h1 className="text-2xl font-bold mb-1">Lịch sử mua vé</h1>
           <p className="text-gray-600 text-sm">
             Theo dõi và quản lý quá trình lịch sử mua vé của bạn
           </p>
         </div>
-        <Link href="/mua-ve">
+        <Link href="/trips">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-5 text-sm rounded-full">
             Đặt vé
           </Button>
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-        <BookingFilters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onSearch={handleSearch}
-          onReset={handleReset}
-          isLoading={isLoading}
-        />
+      <TicketResult
+        tickets={data?.data.content as Ticket[] | undefined}
+        isLoading={isLoading}
+        size={data?.data.totalElements}
+      />
+      <PageController
+        page={page}
+        totalPages={totalPages}
+        onChangePage={setPage}
+      />
 
-        <BookingTable
-          bookings={filteredBookings}
-          isLoading={isLoading}
-          onViewDetail={handleViewDetail}
-        />
-      </div>
-
-      <BookingDetailModal
+      <TicketDetailModal
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
-        booking={selectedBooking}
+        ticketId={selectedTicketId}
         onPrint={handlePrint}
         onDownload={handleDownload}
         onCancel={handleCancelBooking}
       />
-    </div>
+    </>
   );
 }

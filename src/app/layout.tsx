@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { Suspense } from "react";
-import Loading from "./loading";
+import AppProvider from "@/contexts/AppContext";
 
 export const metadata: Metadata = {
   title: "Bus Ticket Booking Webapp",
@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <body className="w-screen h-screen">
-        <Suspense fallback={<Loading />}>{children}</Suspense>
+        <AppProvider>
+          <Suspense>{children}</Suspense>
+        </AppProvider>
       </body>
     </html>
   );

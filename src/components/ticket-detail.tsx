@@ -6,69 +6,21 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
-interface BookingDetail {
-  id: string;
-  ticketCode: string;
-  bookingDate: Date;
-  bookingTime: string;
-  status: "confirmed" | "cancelled" | "completed";
-  paymentStatus: "paid" | "pending" | "failed";
-  paymentMethod: string;
-  totalAmount: number;
-  
-  passenger: {
-    name: string;
-    phone: string;
-    email: string;
-  };
-
-  trip: {
-    busCompany: string;
-    busType: string;
-    licensePlate: string;
-    route: {
-      from: string;
-      to: string;
-    };
-    departureDate: Date;
-    departureTime: string;
-    arrivalTime: string;
-    duration: string;
-    pickupPoint: string;
-    dropoffPoint: string;
-  };
-
-  seats: Array<{
-    seatNumber: string;
-    price: number;
-  }>;
-
-  pricing: {
-    subtotal: number;
-    discount: number;
-    serviceFee: number;
-    total: number;
-  };
-}
-
-interface BookingDetailModalProps {
+interface TicketDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  booking: BookingDetail | null;
+  ticketId: string;
   onPrint: () => void;
   onDownload: () => void;
   onCancel: () => void;
 }
 
-export function BookingDetailModal({
+export function TicketDetailModal({
   isOpen,
   onClose,
-  booking,
-  onPrint,
-  onDownload,
-  onCancel,
-}: BookingDetailModalProps) {
-  if (!booking) return null;
+  ticketId,
+}: TicketDetailModalProps) {
+  if (!ticketId) return null;
 
   const formatDate = (date: Date) => {
     return format(date, "dd/MM/yyyy", { locale: vi });
@@ -80,14 +32,25 @@ export function BookingDetailModal({
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      confirmed: { text: "Đã xác nhận", color: "bg-green-50 text-green-700 border-green-200" },
-      cancelled: { text: "Đã hủy", color: "bg-red-50 text-red-700 border-red-200" },
-      completed: { text: "Hoàn thành", color: "bg-blue-50 text-blue-700 border-blue-200" },
+      confirmed: {
+        text: "Đã xác nhận",
+        color: "bg-green-50 text-green-700 border-green-200",
+      },
+      cancelled: {
+        text: "Đã hủy",
+        color: "bg-red-50 text-red-700 border-red-200",
+      },
+      completed: {
+        text: "Hoàn thành",
+        color: "bg-blue-50 text-blue-700 border-blue-200",
+      },
     };
-    
+
     const config = statusConfig[status as keyof typeof statusConfig];
     return (
-      <span className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${config.color}`}>
+      <span
+        className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${config.color}`}
+      >
         {config.text}
       </span>
     );
@@ -95,14 +58,25 @@ export function BookingDetailModal({
 
   const getPaymentStatusBadge = (status: string) => {
     const statusConfig = {
-      paid: { text: "Đã thanh toán", color: "bg-green-50 text-green-700 border-green-200" },
-      pending: { text: "Chờ thanh toán", color: "bg-yellow-50 text-yellow-700 border-yellow-200" },
-      failed: { text: "Thanh toán thất bại", color: "bg-red-50 text-red-700 border-red-200" },
+      paid: {
+        text: "Đã thanh toán",
+        color: "bg-green-50 text-green-700 border-green-200",
+      },
+      pending: {
+        text: "Chờ thanh toán",
+        color: "bg-yellow-50 text-yellow-700 border-yellow-200",
+      },
+      failed: {
+        text: "Thanh toán thất bại",
+        color: "bg-red-50 text-red-700 border-red-200",
+      },
     };
-    
+
     const config = statusConfig[status as keyof typeof statusConfig];
     return (
-      <span className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${config.color}`}>
+      <span
+        className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${config.color}`}
+      >
         {config.text}
       </span>
     );
@@ -112,14 +86,15 @@ export function BookingDetailModal({
     <DialogPrimitive.Root open={isOpen} onOpenChange={onClose}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        
+
         <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-6xl translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 bg-white p-8 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl max-h-[85vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold">Chi tiết vé</h2>
               <p className="text-sm text-gray-600 font-normal mt-1">
-                Mã vé: <span className="font-semibold">{booking.ticketCode}</span>
+                Mã vé:{" "}
+                <span className="font-semibold">{ticketId.ticketCode}</span>
               </p>
             </div>
             <div className="flex gap-2">
@@ -154,11 +129,13 @@ export function BookingDetailModal({
             <div className="flex justify-between items-center p-5 bg-gray-50 rounded-lg">
               <div>
                 <p className="text-sm text-gray-600 mb-2">Trạng thái vé</p>
-                {getStatusBadge(booking.status)}
+                {getStatusBadge(ticketId.status)}
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-2">Trạng thái thanh toán</p>
-                {getPaymentStatusBadge(booking.paymentStatus)}
+                <p className="text-sm text-gray-600 mb-2">
+                  Trạng thái thanh toán
+                </p>
+                {getPaymentStatusBadge(ticketId.paymentStatus)}
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-600">Ngày đặt vé</p>
@@ -178,15 +155,21 @@ export function BookingDetailModal({
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Nhà xe</p>
-                    <p className="text-base font-semibold">{booking.trip.busCompany}</p>
+                    <p className="text-base font-semibold">
+                      {booking.trip.busCompany}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Loại xe</p>
-                    <p className="text-base font-semibold">{booking.trip.busType}</p>
+                    <p className="text-base font-semibold">
+                      {booking.trip.busType}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Biển số xe</p>
-                    <p className="text-base font-semibold">{booking.trip.licensePlate}</p>
+                    <p className="text-base font-semibold">
+                      {booking.trip.licensePlate}
+                    </p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -199,18 +182,25 @@ export function BookingDetailModal({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Ngày đi</p>
-                      <p className="text-base font-semibold">{formatDate(booking.trip.departureDate)}</p>
+                      <p className="text-base font-semibold">
+                        {formatDate(booking.trip.departureDate)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Thời gian</p>
                       <p className="text-base font-semibold">
-                        {booking.trip.departureTime} - {booking.trip.arrivalTime}
+                        {booking.trip.departureTime} -{" "}
+                        {booking.trip.arrivalTime}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Thời gian hành trình</p>
-                    <p className="text-base font-semibold">{booking.trip.duration}</p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      Thời gian hành trình
+                    </p>
+                    <p className="text-base font-semibold">
+                      {booking.trip.duration}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -219,13 +209,17 @@ export function BookingDetailModal({
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Điểm đón</p>
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-sm font-medium text-blue-900">{booking.trip.pickupPoint}</p>
+                    <p className="text-sm font-medium text-blue-900">
+                      {booking.trip.pickupPoint}
+                    </p>
                   </div>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Điểm trả</p>
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <p className="text-sm font-medium text-green-900">{booking.trip.dropoffPoint}</p>
+                    <p className="text-sm font-medium text-green-900">
+                      {booking.trip.dropoffPoint}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -240,15 +234,21 @@ export function BookingDetailModal({
               <div className="grid grid-cols-3 gap-6">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Họ và tên</p>
-                  <p className="text-base font-semibold">{booking.passenger.name}</p>
+                  <p className="text-base font-semibold">
+                    {booking.passenger.name}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Số điện thoại</p>
-                  <p className="text-base font-semibold">{booking.passenger.phone}</p>
+                  <p className="text-base font-semibold">
+                    {booking.passenger.phone}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Email</p>
-                  <p className="text-base font-semibold">{booking.passenger.email}</p>
+                  <p className="text-base font-semibold">
+                    {booking.passenger.email}
+                  </p>
                 </div>
               </div>
             </div>
@@ -271,7 +271,9 @@ export function BookingDetailModal({
                   <tbody>
                     {booking.seats.map((seat, index) => (
                       <tr key={index} className="border-t border-gray-100">
-                        <td className="px-6 py-3 text-sm font-medium">{seat.seatNumber}</td>
+                        <td className="px-6 py-3 text-sm font-medium">
+                          {seat.seatNumber}
+                        </td>
                         <td className="px-6 py-3 text-sm text-right font-semibold">
                           {seat.price.toLocaleString("vi-VN")}đ
                         </td>
@@ -320,8 +322,12 @@ export function BookingDetailModal({
                   </div>
                   <div className="pt-2 border-t border-gray-300">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Phương thức thanh toán</span>
-                      <span className="font-semibold">{booking.paymentMethod}</span>
+                      <span className="text-gray-600">
+                        Phương thức thanh toán
+                      </span>
+                      <span className="font-semibold">
+                        {booking.paymentMethod}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -330,7 +336,9 @@ export function BookingDetailModal({
 
             {/* Notes */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-2 text-sm">Lưu ý quan trọng:</h4>
+              <h4 className="font-semibold text-blue-900 mb-2 text-sm">
+                Lưu ý quan trọng:
+              </h4>
               <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
                 <li>Vui lòng có mặt tại điểm đón trước giờ xuất bến 15 phút</li>
                 <li>Mang theo CMND/CCCD để đối chiếu thông tin khi lên xe</li>

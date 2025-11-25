@@ -19,6 +19,7 @@ import { ChevronLeft, User, Phone, Mail, CircleCheck } from "lucide-react";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const BOOKED_SEATS = ["A2", "A5", "B1", "B4", "C3"];
 const MOCK_DATA = {
@@ -48,6 +49,8 @@ export default function BuyTicketPage() {
   });
   const [terms, setTerms] = useState(false);
 
+  const { user } = useAuthStore();
+
   const tripData = {
     tripId: searchParams.get("tripId") || "",
     departure: searchParams.get("departure") || "08:00",
@@ -70,6 +73,10 @@ export default function BuyTicketPage() {
         ? prev.filter((id) => id !== seatId)
         : [...prev, seatId]
     );
+  };
+
+  const handleDialogCancel = () => {
+    setConfirmDialog({ isOpen: false, type: null });
   };
 
   const handleConfirmCancel = () => {
@@ -105,8 +112,8 @@ export default function BuyTicketPage() {
                 Mã vé: {selectedSeats.join(", ")}
               </p>
             </div>
-            <Button className="w-full bg-orange-600 hover:bg-orange-700">
-              Vé của bạn
+            <Button asChild className="w-full">
+              <Link href="/profile/lich-su-mua-ve">Vé của bạn</Link>
             </Button>
           </CardContent>
         </Card>
@@ -121,7 +128,7 @@ export default function BuyTicketPage() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Button asChild variant={"link"} className="flex items-center gap-4">
             <Link
-              href="/dat-ve"
+              href="/trips"
               className="flex items-center gap-2 hover:opacity-80 transition"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -203,7 +210,7 @@ export default function BuyTicketPage() {
                     <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
                     <Input
                       id="name"
-                      defaultValue={MOCK_DATA.customerName}
+                      defaultValue={user?.firstname + " " + user?.lastname}
                       className="pl-10"
                     />
                   </div>
@@ -218,7 +225,7 @@ export default function BuyTicketPage() {
                     <Phone className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
                     <Input
                       id="phone"
-                      defaultValue={MOCK_DATA.customerPhone}
+                      defaultValue={user?.email}
                       className="pl-10"
                     />
                   </div>
@@ -234,7 +241,7 @@ export default function BuyTicketPage() {
                     <Input
                       id="email"
                       type="email"
-                      defaultValue={MOCK_DATA.customerEmail}
+                      defaultValue={user?.email}
                       className="pl-10"
                     />
                   </div>
@@ -495,11 +502,8 @@ export default function BuyTicketPage() {
           isOpen={confirmDialog.isOpen}
           title="Hủy đặt vé"
           description="Bạn có chắc chắn muốn hủy? Thông tin sẽ không được lưu."
-          onConfirm={() => {
-            setSelectedSeats([]);
-            handleConfirmCancel();
-          }}
-          onCancel={handleConfirmCancel}
+          onConfirm={handleConfirmCancel}
+          onCancel={handleDialogCancel}
           confirmText="Hủy"
           cancelText="Tiếp tục"
         />
@@ -511,7 +515,7 @@ export default function BuyTicketPage() {
           title="Xác nhận thanh toán"
           description={`Bạn sắp thanh toán ${totalPrice.toLocaleString("vi-VN")} VND cho ${selectedSeats.length} ghế. Bạn có chắc chắn?`}
           onConfirm={handleConfirmPayment}
-          onCancel={handleConfirmCancel}
+          onCancel={handleDialogCancel}
           confirmText="Thanh toán"
           cancelText="Hủy"
           isDestructive={false}

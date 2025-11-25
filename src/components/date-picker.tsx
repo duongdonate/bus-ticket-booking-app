@@ -11,7 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DatePickerProps {
   id?: string;
@@ -30,6 +30,14 @@ export const DatePicker = ({ id, value, onChange }: DatePickerProps) => {
     }
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (value === undefined || value === null) {
+      setDate(undefined);
+    } else {
+      setDate(value);
+    }
+  }, [value, date]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

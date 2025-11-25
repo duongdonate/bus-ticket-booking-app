@@ -6,13 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { ArrowLeftRight } from "lucide-react";
 import { format } from "date-fns";
@@ -20,18 +13,14 @@ import { format } from "date-fns";
 import { SearchableSelect } from "@/components/searchable-select";
 import { DatePicker } from "@/components/date-picker";
 import { Selector } from "@/components/selector";
-
-interface TicketSearchCardProps {
-  onSearch: (params: any) => void;
-  initialParams: any;
-}
+import { useRouter, useSearchParams } from "next/navigation";
 
 const optionsLocation = [
-  { label: "Việt Nam", value: "vn" },
-  { label: "Thái Lan", value: "th" },
-  { label: "Lào", value: "la" },
-  { label: "Campuchia", value: "kh" },
-  { label: "Malaysia", value: "my" },
+  { label: "Sài Gòn", value: "SaGo" },
+  { label: "Vũng Tàu", value: "VuTa" },
+  { label: "Đà Lạt", value: "DaLa" },
+  { label: "Phú Yên", value: "PuYe" },
+  { label: "Đà Nẵng", value: "DaNa" },
 ];
 
 const optionsPassenger = [
@@ -42,18 +31,14 @@ const optionsPassenger = [
   { value: 5 },
 ];
 
-export function TicketSearchCard({
-  onSearch,
-  initialParams,
-}: TicketSearchCardProps) {
-  const [tripType, setTripType] = useState(initialParams.tripType);
-  const [departure, setDeparture] = useState(initialParams.departure);
-  const [destination, setDestination] = useState(initialParams.destination);
-  const [date, setDate] = useState<Date | undefined>(
-    initialParams.date ? new Date(initialParams.date) : undefined
-  );
-  const [passengers, setPassengers] = useState(initialParams.passengers);
-  const [value, setValue] = useState("");
+export function TripSearchCard() {
+  const router = useRouter();
+
+  const [tripType, setTripType] = useState("one-way");
+  const [departure, setDeparture] = useState("");
+  const [destination, setDestination] = useState("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [passengers, setPassengers] = useState("1");
 
   const recentSearches = [
     "Vũng Tàu - Sài Gòn",
@@ -62,13 +47,29 @@ export function TicketSearchCard({
   ];
 
   const handleSearch = () => {
-    onSearch({
-      tripType,
-      departure,
-      destination,
-      date: date ? format(date, "yyyy-MM-dd") : "",
-      passengers,
-    });
+    const params = new URLSearchParams();
+
+    // Gán các giá trị vào params
+    params.set("departurePoint", departure);
+    params.set("destination", destination);
+
+    if (date) {
+      params.set("departureDate", format(date, "yyyy-MM-dd"));
+    }
+
+    if (passengers) {
+      params.set("numTickets", passengers);
+    }
+
+    // Luôn reset về trang 1 khi tìm kiếm mới
+    params.set("page", "1");
+
+    // Params phụ (có thể backend không dùng để lọc nhưng frontend cần để hiển thị lại UI)
+    params.set("tripType", tripType);
+
+    // 4. Đẩy lên URL -> Next.js sẽ bắt sự kiện này ở page.tsx -> Trigger fetch data
+    // scroll: false để giữ vị trí màn hình, không bị nhảy lên đầu trang
+    router.push(`/trips?${params.toString()}`);
   };
 
   const handleSwap = () => {
@@ -107,17 +108,18 @@ export function TicketSearchCard({
             {/* Departure & Destination */}
             <div className="col-span-2 flex justify-center items-end gap-1">
               {/* Departure */}
-              <div className="space-y-2">
+              <div className="flex-1 space-y-2">
                 <Label htmlFor="departure">Điểm đi</Label>
-                <Input
+                <SearchableSelect
                   id="departure"
-                  placeholder="Địa điểm đi"
+                  options={optionsLocation}
                   value={departure}
-                  onChange={(e) => setDeparture(e.target.value)}
+                  onChange={setDeparture}
+                  placeholder="Chọn quốc gia"
                 />
               </div>
               {/* Swap Button */}
-              <div className="z-10">
+              <div className="shrink-0 z-10">
                 <Button
                   type="button"
                   variant="outline"
@@ -129,13 +131,14 @@ export function TicketSearchCard({
                 </Button>
               </div>
               {/* Destination */}
-              <div className="space-y-2">
+              <div className="flex-1 space-y-2">
                 <Label htmlFor="destination">Điểm đến</Label>
-                <Input
+                <SearchableSelect
                   id="destination"
-                  placeholder="Địa điểm đến"
+                  options={optionsLocation}
                   value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
+                  onChange={setDestination}
+                  placeholder="Chọn quốc gia"
                 />
               </div>
             </div>
@@ -157,15 +160,6 @@ export function TicketSearchCard({
                 unit=" vé"
               />
             </div>
-          </div>
-
-          <div className="p-10">
-            <SearchableSelect
-              options={optionsLocation}
-              value={value}
-              onChange={setValue}
-              placeholder="Chọn quốc gia"
-            />
           </div>
 
           {/* Recent Searches */}

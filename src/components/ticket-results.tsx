@@ -1,48 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { TicketFilters } from "./ticket-filters";
-import { TicketList } from "./ticket-list";
-import { SelectedTripCard } from "./selected-trip-card";
+import { TicketTable } from "./ticket-table";
+import { Filters } from "./ticket-filters";
 
-interface TicketResultsProps {
-  searchParams: any;
-  viewingScheduleId: string | null;
-  onViewSchedule: (id: string | null) => void;
+interface TicketResultProps {
+  isLoading: boolean;
+  tickets?: any[];
+  size?: number;
+  onViewDetail?: () => void;
 }
 
-export function TicketResults({
-  searchParams,
-  viewingScheduleId,
-  onViewSchedule,
-}: TicketResultsProps) {
-  const [filters, setFilters] = useState({
-    timeSlots: [] as string[],
-    busTypes: [] as string[],
-    seatRows: [] as string[],
+export function TicketResult({
+  isLoading,
+  tickets,
+  size,
+  onViewDetail,
+}: TicketResultProps) {
+  const [filters, setFilters] = useState<Filters>({
+    ticketId: "",
+    date: undefined,
+    routeName: "",
+    status: "all",
   });
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Left Column: Filters & Selected Trip */}
-      <div className="space-y-6">
-        {viewingScheduleId && (
-          <SelectedTripCard
-            tripId={viewingScheduleId}
-            searchParams={searchParams}
-          />
-        )}
-        <TicketFilters filters={filters} onFiltersChange={setFilters} />
-      </div>
+  const handleFilterChange = (
+    field: keyof Filters,
+    value: string | Date | undefined
+  ) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
 
-      {/* Right Column: Trip List */}
-      <div className="lg:col-span-2">
-        <TicketList
-          filters={filters}
-          viewingScheduleId={viewingScheduleId}
-          onViewSchedule={onViewSchedule}
-        />
-      </div>
+  const handleReset = () => {
+    setFilters({
+      ticketId: "",
+      date: undefined,
+      routeName: "",
+      status: "all",
+    });
+  };
+
+  const filteredTickets = useMemo(() => {
+    if (!tickets || tickets.length === 0) return [];
+
+    return tickets.filter((ticket) => {
+      // Filter by ticket ID
+      if (
+        filters.ticketId &&
+        !ticket.id.toLowerCase().includes(filters.ticketId.toLowerCase())
+      ) {
+        return false;
+      }
+
+      // Filter by route name
+      if (
+        filters.routeName &&
+        !ticket.routeName
+          .toLowerCase()
+          .includes(filters.routeName.toLowerCase())
+      ) {
+        return false;
+      }
+
+      // Filter by date
+      if (filters.date) {
+        const ticketDate = new Date(ticket.departureTime);
+        if (
+          ticketDate.getFullYear() !== filters.date.getFullYear() ||
+          ticketDate.getMonth() !== filters.date.getMonth() ||
+          ticketDate.getDate() !== filters.date.getDate()
+        ) {
+          return false;
+        }
+      }
+
+      // Filter by status
+      if (filters.status !== "all" && ticket.status !== filters.status) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [tickets, filters]);
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+      <TicketFilters
+        filtersData={filters}
+        onFilterChange={handleFilterChange}
+        onSearch={() => {}}
+        onReset={handleReset}
+        isLoading={isLoading}
+      />
+
+      <TicketTable
+        tickets={filteredTickets}
+        isLoading={isLoading}
+        size={size}
+        onViewDetail={onViewDetail}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
 type Option = {
   label?: string;
@@ -37,6 +38,14 @@ export const Selector = ({
       onChange(val);
     }
   };
+
+  useEffect(() => {
+    if (value === undefined || value === null) {
+      setSelectedValue("");
+    } else {
+      setSelectedValue(value);
+    }
+  }, [value, selectedValue]);
 
   return (
     <Select value={selectedValue} onValueChange={handleSelect}>

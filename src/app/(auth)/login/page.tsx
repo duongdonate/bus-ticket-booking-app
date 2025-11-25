@@ -1,47 +1,85 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import FormItem from "@/shared/FormItem";
-import Input from "@/shared/Input/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormItem } from "@/components/ui/form-item";
+import { UserRound, RectangleEllipsis } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { User } from "@/types/User";
+import { Role } from "@/types/Role";
+import Logo from "@/assets/logo.svg";
+import Image from "next/image";
 
 const PageLogin = () => {
+  const { login, isLoggingIn } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Thực tế
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    login({ username, password });
+  };
+
+  //Sử dụng ở môi trường development để làm giả việc đăng nhập
+  // const authStore = useAuthStore();
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const mockUser: User = {
+  //     username: "testUser",
+  //     email: "test@example.com",
+  //     firstname: "test-firstname",
+  //     lastname: "test-lastname",
+  //     roles: [Role.PASSENGER],
+  //   }; // Sample user
+  //   authStore.setAuth(mockUser, "mockAccessToken", "mockRefreshToken");
+  // };
+
   return (
     <div className="mt-16 h-max rounded-2xl bg-card p-10 shadow-2xl w-full max-w-md">
-      <h2 className="mb-10 text-center text-4xl font-semibold text-card-foreground">
-        Welcome back!
-      </h2>
+      <Image
+        src={Logo}
+        alt="Logo"
+        width={180}
+        height={60}
+        className="mx-auto mb-10"
+      />
       <div className="mx-auto">
         <div className="space-y-4">
-          <form className="grid gap-2">
-            <FormItem>
+          <form onSubmit={handleSubmit} className="grid gap-2">
+            <FormItem icon={<UserRound className="size-5" />}>
               <Input
+                onChange={(e) => setUsername(e.target.value)}
                 type="text"
-                rounded="rounded-xl"
-                sizeClass="h-10 px-4 py-2"
-                placeholder="Your username"
+                placeholder="Username"
+                className="rounded-xl h-10 px-4 py-2"
               />
             </FormItem>
-            <FormItem>
+            <FormItem
+              icon={<RectangleEllipsis className="size-5" />}
+              passwordToggle
+            >
               <Input
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
-                rounded="rounded-xl"
-                sizeClass="h-10 px-4 py-2"
                 placeholder="Your password"
+                className="rounded-xl h-10 px-4 py-2"
               />
             </FormItem>
-            <ButtonPrimary className="mt-2 rounded-xl" type="submit">
-              Sign in
-            </ButtonPrimary>
+            <Button type="submit" className="mt-2 rounded-xl h-10 px-4 py-2">
+              {isLoggingIn ? "Đang đăng nhập..." : "Đăng nhập"}
+            </Button>
           </form>
           <span className="block text-center text-md font-semibold text-muted-foreground">
-            Don&apos;t have an account? {` `}
+            Tạo tài khoản mới? {` `}
             <Link
               href="/signup"
               className="text-primary hover:underline hover:underline-offset-2"
             >
-              Sign up
+              Đăng Ký
             </Link>
           </span>
         </div>

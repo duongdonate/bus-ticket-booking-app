@@ -1,118 +1,118 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Selector } from "@/components/selector";
+import { DatePicker } from "@/components/date-picker";
+import { Ticket as TicketIcon, RotateCcw, Search } from "lucide-react";
+import { FormItem } from "@/components/ui/form-item";
+
+import { Ticket, TicketStatus } from "@/types/Ticket";
+import { useEffect, useState } from "react";
+
+export interface Filters {
+  ticketId: string;
+  date: Date | undefined;
+  routeName: string;
+  status: TicketStatus | "all";
+}
 
 interface TicketFiltersProps {
-  filters: {
-    timeSlots: string[];
-    busTypes: string[];
-    seatRows: string[];
-  };
-  onFiltersChange: (filters: any) => void;
+  filtersData: Filters;
+  onFilterChange: (
+    field: keyof Filters,
+    value: string | Date | undefined
+  ) => void;
+  onSearch: () => void;
+  onReset: () => void;
+  isLoading?: boolean;
 }
 
 export function TicketFilters({
-  filters,
-  onFiltersChange,
+  filtersData,
+  onFilterChange,
+  onSearch,
+  onReset,
+  isLoading = false,
 }: TicketFiltersProps) {
-  const timeSlots = [
-    { id: "early", label: "Sáng sớm (00:00 - 06:00)" },
-    { id: "morning", label: "Buổi sáng (06:00 - 12:00)" },
-    { id: "afternoon", label: "Buổi chiều (12:00 - 18:00)" },
-    { id: "evening", label: "Buổi tối (18:00 - 24:00)" },
-  ];
+  const [filters, setFilters] = useState(filtersData);
 
-  const busTypes = ["Ghế", "Giường", "Limousine"];
-  const seatRows = ["Hàng đầu", "Hàng giữa", "Hàng cuối"];
+  useEffect(() => {
+    setFilters(filtersData);
+  }, [filters, filtersData]);
 
-  const handleTimeSlotChange = (id: string) => {
-    const updated = filters.timeSlots.includes(id)
-      ? filters.timeSlots.filter((t) => t !== id)
-      : [...filters.timeSlots, id];
-    onFiltersChange({ ...filters, timeSlots: updated });
+  const handleReset = () => {
+    onReset();
   };
-
-  const handleBusTypeChange = (type: string) => {
-    const updated = filters.busTypes.includes(type)
-      ? filters.busTypes.filter((t) => t !== type)
-      : [...filters.busTypes, type];
-    onFiltersChange({ ...filters, busTypes: updated });
-  };
-
-  const handleSeatRowChange = (row: string) => {
-    const updated = filters.seatRows.includes(row)
-      ? filters.seatRows.filter((r) => r !== row)
-      : [...filters.seatRows, row];
-    onFiltersChange({ ...filters, seatRows: updated });
-  };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl text-center">BỘ LỌC TÌM KIẾM</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Time Slots */}
-        <div className="space-y-3">
-          <h3 className="font-semibold">Giờ đi</h3>
-          <div className="space-y-2">
-            {timeSlots.map((slot) => (
-              <div key={slot.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={slot.id}
-                  checked={filters.timeSlots.includes(slot.id)}
-                  onCheckedChange={() => handleTimeSlotChange(slot.id)}
-                />
-                <Label
-                  htmlFor={slot.id}
-                  className={`cursor-pointer ${filters.timeSlots.includes(slot.id) ? "text-primary" : ""}`}
-                >
-                  {slot.label}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </div>
+    <>
+      {/* Size & AllElement */}
 
-        {/* Bus Types */}
-        <div className="space-y-3">
-          <h3 className="font-semibold">Loại xe</h3>
-          <div className="flex flex-wrap gap-2">
-            {busTypes.map((type) => (
-              <Button
-                key={type}
-                variant={
-                  filters.busTypes.includes(type) ? "default" : "outline"
-                }
-                size="sm"
-                onClick={() => handleBusTypeChange(type)}
-              >
-                {type}
-              </Button>
-            ))}
-          </div>
-        </div>
+      {/* Field Fiters Local */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <FormItem
+          icon={<TicketIcon className="size-5" />}
+          label="Mã vé"
+          htmlFor="ticketId"
+          key={"ticketId"}
+        >
+          <Input
+            id="ticketId"
+            placeholder="Nhập Mã vé"
+            value={filters.ticketId}
+            onChange={(e) => onFilterChange("ticketId", e.target.value)}
+            className="h-10 text-sm border-gray-300"
+          />
+        </FormItem>
 
-        {/* Seat Rows */}
-        <div className="space-y-3">
-          <h3 className="font-semibold">Hàng ghế</h3>
-          <div className="flex flex-wrap gap-2">
-            {seatRows.map((row) => (
-              <Button
-                key={row}
-                variant={filters.seatRows.includes(row) ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleSeatRowChange(row)}
-              >
-                {row}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        <FormItem label="Tuyến đường" htmlFor="routeName" key={"routeName"}>
+          <Input
+            id="routeName"
+            placeholder="Nhập tuyến đường"
+            value={filters.routeName}
+            onChange={(e) => onFilterChange("routeName", e.target.value)}
+            className="h-10 text-sm border-gray-300"
+          />
+        </FormItem>
+
+        <FormItem label="Thời gian đặt vé" htmlFor="date" key={"date"}>
+          <DatePicker
+            id="date"
+            value={filters.date}
+            onChange={(date) => onFilterChange("date", date)}
+          />
+        </FormItem>
+
+        <FormItem label="Trạng thái" htmlFor="status" key={"status"}>
+          <Selector
+            id="status"
+            options={[
+              { label: "Tất cả", value: "all" },
+              { label: "Đã mua", value: TicketStatus.PURCHASED.toString() },
+            ]}
+            value={filters.status}
+            onChange={(value) => onFilterChange("status", value)}
+          ></Selector>
+        </FormItem>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 mb-6">
+        <Button
+          onClick={handleReset}
+          variant="outline"
+          className="text-sm rounded-lg border-gray-300"
+        >
+          <RotateCcw className="size-5" />
+        </Button>
+        <Button
+          className="px-8 py-2 text-sm rounded-lg bg-blue-500 hover:bg-blue-600"
+          disabled={isLoading}
+        >
+          <Search className="size-5" />
+          {isLoading ? "Đang tìm..." : "Tìm vé"}
+        </Button>
+      </div>
+    </>
   );
 }

@@ -5,21 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Clock } from "lucide-react";
-import { TripScheduleView } from "./trip-schedule-view";
+import { TripScheduleView } from "@/components/trip-schedule-view";
 import { useRouter } from "next/navigation";
-
-interface Trip {
-  id: string;
-  departure: string;
-  arrival: string;
-  duration: string;
-  departureLocation: string;
-  arrivalLocation: string;
-  price: string;
-  availableSeats: string;
-  busType: string;
-  seatRow: string;
-}
+import { Trip } from "@/types/Trip";
 
 interface TripCardProps {
   trip: Trip;
@@ -27,26 +15,84 @@ interface TripCardProps {
   onViewSchedule: (id: string | null) => void;
 }
 
+export class TripState {
+  id: string;
+  routeName: string;
+  departureTime: Date;
+  arrivalTime: Date;
+  departureLocation: string;
+  arrivalLocation: string;
+  duration: number; // in minutes
+  totalAvailableSeats: number;
+  price: number;
+
+  constructor({
+    id,
+    routeName, // Ví dụ: "Hanoi - Ninh Binh"
+    departureTime,
+    departurePoint,
+    arrivalTime,
+    destination,
+    totalAvailableSeats,
+    basePrice,
+  }: Trip) {
+    this.id = id;
+    this.routeName = routeName;
+    this.departureTime = new Date(departureTime);
+    this.arrivalTime = new Date(arrivalTime);
+    this.arrivalLocation = destination;
+    this.departureLocation = routeName.split(" - ")[0];
+    this.duration = Math.floor(
+      (this.arrivalTime.getTime() - this.departureTime.getTime()) / 60000
+    ); // convert ms to minutes
+    this.totalAvailableSeats = totalAvailableSeats || 0;
+    this.price = basePrice; // Placeholder, replace with actual price if available
+  }
+  get durationString() {
+    const hours = Math.floor(this.duration / 60);
+    const minutes = this.duration % 60;
+    return `${hours} giờ ${minutes} phút`;
+  }
+
+  get departureTimeString() {
+    return this.departureTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  get arrivalTimeString() {
+    return this.arrivalTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  get priceString() {
+    return this.price.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  }
+}
+
 export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
   const tabsMap = [
     { value: "schedule", label: "Lịch trình" },
     { value: "transfers", label: "Trung chuyển" },
     { value: "policy", label: "Chính sách" },
   ];
-  const router = useRouter();
 
+  const [tripState, setTripState] = useState<TripState>(new TripState(trip));
+
+  // const router = useRouter();
   const handleSelectTrip = () => {
-    const tripParams = new URLSearchParams({
-      tripId: trip.id,
-      departure: trip.departure,
-      arrival: trip.arrival,
-      departureLocation: trip.departureLocation,
-      arrivalLocation: trip.arrivalLocation,
-      price: trip.price,
-      busType: trip.busType,
-    });
-    router.push(`/mua-ve?${tripParams.toString()}`);
+    console.log("Selected trip:", tripState);
+    router.push(`/trips/${trip.id}`);
   };
 
   return (
@@ -57,43 +103,50 @@ export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
           <div className="w-full flex items-start">
             {/* Departure & Arrival Info */}
             <div className="flex-1">
-              <div className="flex items-center">
+              <div className="flex items-baseline">
                 {/* From */}
                 <div className="flex flex-col items-center justify-center px-1">
-                  <div className="text-2xl font-bold">{trip.departure}</div>
+                  <div className="text-2xl font-bold">
+                    {tripState.departureTimeString}
+                  </div>
                   <p className="text-sm text-center text-muted-foreground">
-                    {trip.departureLocation}
+                    {tripState.departureLocation}
                   </p>
                 </div>
                 {/* Duration */}
-                <div className="w-full flex items-center">
+                <div className="w-full items-center lg:flex hidden">
+                  {" "}
+                  {/* Add hidden md:flex class */}
                   <span className="flex-1 border-dotted border-t-2 border-muted-foreground"></span>
                   <div className="flex flex-col items-center justify-center px-4">
                     <Clock className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      {trip.duration}
+                      {tripState.durationString}
                     </span>
                   </div>
                   <span className="flex-1 border-dotted border-t-2 border-muted-foreground"></span>
                 </div>
                 {/* To */}
                 <div className="flex flex-col items-center justify-center px-1">
-                  <div className="text-2xl font-bold">{trip.arrival}</div>
+                  <div className="text-2xl font-bold">
+                    {tripState.arrivalTimeString}
+                  </div>
                   <p className="text-sm text-center text-muted-foreground">
-                    {trip.arrivalLocation}
+                    {tripState.arrivalLocation}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Price & Availability */}
-            <div className="w-64 text-right">
-              <div className="text-2xl font-bold text-primary">
-                {trip.price}đ
+            <div className="w-44 text-right">
+              <p className="text-card-foreground font-semibold">Giá từ</p>
+              <div className="text-lg font-bold text-primary">
+                {tripState.priceString}
               </div>
-              <div className="text-sm text-muted-foreground">
-                {trip.availableSeats} chỗ trống
-              </div>
+              {/* <div className="text-sm text-muted-foreground">
+                {tripState.totalAvailableSeats} chỗ trống
+              </div> */}
             </div>
           </div>
 
@@ -117,7 +170,7 @@ export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
             {activeTab && (
               <div className="mt-2 bg-background px-4 py-2 rounded-md overflow-y-auto min-h-32 max-h-64 shadow-sm">
                 <TabsContent value="schedule">
-                  <TripScheduleView trip={trip} />
+                  {/* <TripScheduleView trip={trip} /> */}
                 </TabsContent>
 
                 <TabsContent value="transfers" className="space-y-4">
@@ -145,7 +198,7 @@ export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
           {/* Select Button */}
           <div className="flex justify-end">
             <Button onClick={handleSelectTrip} variant={"default"}>
-              Chọn chuyến
+              Xem Chi Tiết
             </Button>
           </div>
         </div>
