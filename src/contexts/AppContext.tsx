@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { useState } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function AppProviders({
   children,
@@ -30,6 +31,7 @@ export default function AppProviders({
       <AuthProvider>
         <ToastProvider>{children}</ToastProvider>
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

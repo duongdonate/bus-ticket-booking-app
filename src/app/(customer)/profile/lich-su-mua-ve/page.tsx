@@ -14,15 +14,19 @@ import { useQuery } from "@tanstack/react-query";
 import { ticketApi } from "@/services/ticketService";
 import { Ticket } from "@/types/Ticket";
 import { TicketResult } from "@/components/ticket-results";
+import { usePathname } from "next/navigation";
 
+const LIMIT_SIZE = 10;
 export default function LichSuMuaVePage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(LIMIT_SIZE);
+  const pathname = usePathname();
 
   const { data, isLoading, isFetching, isError } = useQuery({
     queryKey: ["my-tickets", page, size],
     queryFn: () => ticketApi.getAllTickets(page, size),
+    enabled: pathname === "/profile/lich-su-mua-ve",
   });
 
   useEffect(() => {
@@ -129,7 +133,9 @@ export default function LichSuMuaVePage() {
       <TicketResult
         tickets={data?.data.content as Ticket[] | undefined}
         isLoading={isLoading}
-        size={data?.data.totalElements}
+        totalTickets={data?.data.totalElements}
+        page={page}
+        size={size}
       />
       <PageController
         page={page}

@@ -5,9 +5,10 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Ticket, TicketStatus } from "@/types/Ticket";
 import { SquareDashedTopSolid } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export class TicketState implements Ticket {
+  index?: number;
   id: string;
   price: number;
   selectedSeat: string;
@@ -50,6 +51,8 @@ interface TicketTableProps {
   onViewDetail?: (ticketId: string) => void;
   onCancel?: (ticketId: string) => void;
   size?: number;
+  page?: number;
+  totalTickets?: number;
 }
 
 export type TicketTableColumn = {
@@ -186,22 +189,23 @@ export function TicketBodyTable({
   tickets,
   listKeys,
   onViewDetail,
+  size = 10,
 }: {
   isLoading?: boolean;
   tickets: TicketState[];
   listKeys: (keyof Ticket | string)[];
   onViewDetail: (ticketId: string) => void;
+  size?: number;
 }) {
   return (
     <tbody className="bg-white">
       {isLoading ? (
-        <tr>
-          <td colSpan={listKeys.length} className="py-20 text-center">
-            <div className="flex justify-center items-center">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
-            </div>
-          </td>
-        </tr>
+        Array.from({ length: size }).map((_, index) => (
+          <tr
+            key={index}
+            className="border-b border-gray-100 hover:bg-gray-50 animate-pulse px-6 py-5 h-10 duration-1000 delay-200"
+          ></tr>
+        ))
       ) : tickets.length === 0 ? (
         <tr>
           <td colSpan={listKeys.length} className="py-20">
@@ -234,9 +238,10 @@ export function TicketTable({
   onViewDetail,
   onCancel,
   size,
+  page,
+  totalTickets,
 }: TicketTableProps) {
   const ticketColumns: TicketTableColumn[] = [
-    { label: "STT", key: "index" },
     { label: "Hành Động", key: "actions" },
     { label: "Mã Vé", key: "id" },
     { label: "Trạng Thái", key: "status" },
@@ -247,6 +252,18 @@ export function TicketTable({
   ];
 
   const [ticketsState, setTicketsState] = useState<TicketState[]>([]);
+
+  const showIndexTable = useMemo(() => {
+    const fromIndex = page && size ? (page - 1) * size + 1 : 0;
+    const toIndex =
+      page && size
+        ? Math.min(
+            (page - 1) * size + (tickets ? tickets.length : 0),
+            totalTickets || 0
+          )
+        : 0;
+    return `${fromIndex} - ${toIndex}`;
+  }, [page, size, tickets, totalTickets]);
 
   useEffect(() => {
     if (tickets) {
@@ -269,8 +286,8 @@ export function TicketTable({
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <span className="text-lg text-card-foreground mb-2 block font-bold">
-          Tổng: {size} vé
+        <span className="text-lg text-card-foreground mb-2 block font-semibold">
+          Hiển thị {showIndexTable} trên {totalTickets} vé
         </span>
       </div>
       <div className="border border-gray-200 rounded-xl overflow-hidden">
@@ -280,6 +297,7 @@ export function TicketTable({
               listLabels={ticketColumns.map((item) => item.label)}
             />
             <TicketBodyTable
+              size={size}
               isLoading={isLoading}
               tickets={ticketsState}
               listKeys={ticketColumns.map((item) => item.key)}

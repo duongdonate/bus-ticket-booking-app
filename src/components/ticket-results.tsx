@@ -9,6 +9,8 @@ interface TicketResultProps {
   isLoading: boolean;
   tickets?: any[];
   size?: number;
+  page?: number;
+  totalTickets?: number;
   onViewDetail?: () => void;
 }
 
@@ -17,6 +19,8 @@ export function TicketResult({
   tickets,
   size,
   onViewDetail,
+  totalTickets,
+  page,
 }: TicketResultProps) {
   const [filters, setFilters] = useState<Filters>({
     ticketId: "",
@@ -96,8 +100,10 @@ export function TicketResult({
 
       <TicketTable
         tickets={filteredTickets}
+        totalTickets={totalTickets}
         isLoading={isLoading}
         size={size}
+        page={page}
         onViewDetail={onViewDetail}
       />
     </div>
