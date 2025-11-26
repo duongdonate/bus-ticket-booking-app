@@ -89,13 +89,9 @@ export default function LichSuMuaVePage() {
   //   }
   // };
 
-  const handleViewDetail = (bookingId: string) => {
-    const bookingDetail = mockBookingDetails[bookingId];
-    if (bookingDetail) {
-      setIsDetailOpen(true);
-    } else {
-      alert("Không tìm thấy thông tin vé");
-    }
+  const handleViewDetail = (ticketId: string) => {
+    setIsDetailOpen(true);
+    setSelectedTicketId(ticketId);
   };
 
   const handlePrint = () => {
@@ -136,6 +132,7 @@ export default function LichSuMuaVePage() {
         totalTickets={data?.data.totalElements}
         page={page}
         size={size}
+        onViewDetail={handleViewDetail}
       />
       <PageController
         page={page}
@@ -145,11 +142,8 @@ export default function LichSuMuaVePage() {
 
       <TicketDetailModal
         isOpen={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
         ticketId={selectedTicketId}
-        onPrint={handlePrint}
-        onDownload={handleDownload}
-        onCancel={handleCancelBooking}
+        onClose={() => setIsDetailOpen(false)}
       />
     </>
   );

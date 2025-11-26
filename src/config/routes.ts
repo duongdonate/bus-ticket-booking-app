@@ -12,14 +12,11 @@ export const Routes: RouteRule[] = [
   // --- Public Routes ---
   { path: "/login", isPublic: true },
   { path: "/signup", isPublic: true },
-
   // --- Admin Routes (Bao gồm cả trang con như /admin/users) ---
   { path: "/", isPublic: true },
-
   // --- Passenger Routes ---
   { path: "/trips", roles: [Role.PASSENGER] },
-  { path: "/mua-ve", roles: [Role.PASSENGER] },
-
   // --- User chung (Chỉ cần login là vào được, ví dụ trang profile) ---
   { path: "/profile", roles: [] },
+  { path: "/staff/check-in", isPublic: true },
 ];

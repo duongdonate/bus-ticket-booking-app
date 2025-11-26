@@ -19,4 +19,6 @@ export const ticketApi = {
   },
 
   getTicketById: (id: string) => axiosPrivate.get(`/tickets/${id}`),
+  getQRCode: (id: string) =>
+    axiosPrivate.get(`/tickets/${id}/qrcodes`, { responseType: "blob" }),
 };

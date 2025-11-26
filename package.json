@@ -1,9 +1,9 @@
 {
-  "name": "bus-ticket-booking-webapp",
-  "version": "0.1.0",
+  "name": "bus-ticket-booking-app",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,6 +13,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tanstack/react-query": "^5.90.10",
     "@tanstack/react-query-devtools": "^5.91.1",
+    "@yudiel/react-qr-scanner": "^2.4.1",
     "axios": "^1.13.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",

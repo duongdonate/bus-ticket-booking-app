@@ -20,28 +20,17 @@ export class TicketState implements Ticket {
   arrivalLocation?: string;
   departureLocation?: string;
 
-  constructor(
-    id: string,
-    price: number,
-    selectedSeat: string,
-    deckLabel: string,
-    routeName: string,
-    status: TicketStatus,
-    arrivalTime?: string,
-    departureTime?: string,
-    arrivalLocation?: string,
-    departureLocation?: string
-  ) {
-    this.id = id;
-    this.price = price;
-    this.selectedSeat = selectedSeat;
-    this.deckLabel = deckLabel;
-    this.routeName = routeName;
-    this.status = status;
-    this.arrivalTime = new Date(arrivalTime || "");
-    this.departureTime = new Date(departureTime || "");
-    this.arrivalLocation = arrivalLocation;
-    this.departureLocation = departureLocation;
+  constructor(data: Partial<TicketState>) {
+    this.id = data.id!;
+    this.price = data.price!;
+    this.selectedSeat = data.selectedSeat!;
+    this.deckLabel = data.deckLabel!;
+    this.routeName = data.routeName!;
+    this.status = data.status!;
+    this.arrivalTime = data.arrivalTime;
+    this.departureTime = data.departureTime;
+    this.arrivalLocation = data.arrivalLocation;
+    this.departureLocation = data.departureLocation;
   }
 }
 
@@ -267,19 +256,7 @@ export function TicketTable({
 
   useEffect(() => {
     if (tickets) {
-      setTicketsState(
-        tickets.map(
-          (ticket) =>
-            new TicketState(
-              ticket.id,
-              ticket.price,
-              ticket.selectedSeat,
-              ticket.deckLabel,
-              ticket.routeName,
-              ticket.status
-            )
-        )
-      );
+      setTicketsState(tickets.map((ticket) => new TicketState(ticket)));
     }
   }, [tickets]);
 

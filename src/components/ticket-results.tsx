@@ -11,7 +11,7 @@ interface TicketResultProps {
   size?: number;
   page?: number;
   totalTickets?: number;
-  onViewDetail?: () => void;
+  onViewDetail?: (ticketId: string) => void;
 }
 
 export function TicketResult({
