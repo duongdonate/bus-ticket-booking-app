@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -20,18 +22,17 @@ export function NavItem({
 }: NavItemProps) {
   const enhancedIcon = React.isValidElement(icon)
     ? React.cloneElement(icon, {
-        className: cn(icon.props.className, isActive && "text-primary"),
-      } as React.HTMLAttributes<HTMLElement>)
+      className: cn(icon.props.className, isActive && "text-primary"),
+    } as React.HTMLAttributes<HTMLElement>)
     : icon;
 
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 p-2 rounded-lg transition-colors overflow-hidden ${
-        isActive
+      className={`flex items-center gap-3 p-2 rounded-lg transition-colors overflow-hidden ${isActive
           ? "bg-orange-50 border-l-4 border-primary rounded-l-none"
           : "hover:bg-gray-50"
-      }`}
+        }`}
     >
       <>
         <div

@@ -18,9 +18,8 @@ export default function Toast({ id, message, onRemove }: ToastProps) {
 
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev <= 0 && onRemove) {
+        if (prev <= 0) {
           clearInterval(interval);
-          onRemove(id);
           return 0;
         }
         return prev - 2;
@@ -29,6 +28,12 @@ export default function Toast({ id, message, onRemove }: ToastProps) {
 
     return () => clearInterval(interval);
   }, [isHovered]);
+
+  useEffect(() => {
+    if (progress <= 0 && onRemove) {
+      onRemove(id);
+    }
+  }, [progress, onRemove, id]);
 
   return (
     <motion.div

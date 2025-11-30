@@ -46,7 +46,7 @@ export class TripState {
       (this.arrivalTime.getTime() - this.departureTime.getTime()) / 60000
     ); // convert ms to minutes
     this.totalAvailableSeats = totalAvailableSeats || 0;
-    this.price = basePrice; // Placeholder, replace with actual price if available
+    this.price = basePrice || 0; // Placeholder, replace with actual price if available
   }
   get durationString() {
     const hours = Math.floor(this.duration / 60);
@@ -71,7 +71,7 @@ export class TripState {
   }
 
   get priceString() {
-    return this.price.toLocaleString("vi-VN", {
+    return (this.price || 0).toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });

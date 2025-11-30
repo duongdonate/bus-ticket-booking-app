@@ -6,6 +6,7 @@ export interface User {
   lastname: string;
   email: string;
   roles: Role[];
+  managedByOperatorId?: string;
   // Thêm các field khác nếu cần
 }
 

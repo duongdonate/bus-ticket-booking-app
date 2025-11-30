@@ -18,25 +18,11 @@ const PageLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Thực tế
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     login({ username, password });
   };
-
-  //Sử dụng ở môi trường development để làm giả việc đăng nhập
-  // const authStore = useAuthStore();
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   const mockUser: User = {
-  //     username: "testUser",
-  //     email: "test@example.com",
-  //     firstname: "test-firstname",
-  //     lastname: "test-lastname",
-  //     roles: [Role.PASSENGER],
-  //   }; // Sample user
-  //   authStore.setAuth(mockUser, "mockAccessToken", "mockRefreshToken");
-  // };
 
   return (
     <div className="mt-16 h-max rounded-2xl bg-card p-10 shadow-2xl w-full max-w-md">
