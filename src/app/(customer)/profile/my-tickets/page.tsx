@@ -26,7 +26,7 @@ export default function LichSuMuaVePage() {
   const { data, isLoading, isFetching, isError } = useQuery({
     queryKey: ["my-tickets", page, size],
     queryFn: () => ticketApi.getAllTickets(page, size),
-    enabled: pathname === "/profile/lich-su-mua-ve",
+    enabled: pathname === "/profile/my-tickets",
   });
 
   useEffect(() => {

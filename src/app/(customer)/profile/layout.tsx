@@ -96,8 +96,8 @@ export default function ProfileLayout({
     {
       label: "Vé của tôi",
       icon: <Tickets className="size-6" />,
-      href: "/profile/lich-su-mua-ve",
-      isActive: pathname === "/profile/lich-su-mua-ve",
+      href: "/profile/my-tickets",
+      isActive: pathname === "/profile/my-tickets",
     },
   ];
 

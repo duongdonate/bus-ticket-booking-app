@@ -24,7 +24,7 @@ export default function PaymentResultPage() {
   const confirmBooking = (status: string) => {
     if (status === "success") {
       // xem vé
-      router.push("/profile/lich-su-mua-ve");
+      router.push("/profile/my-tickets");
     }
 
     if (status === "failed") {

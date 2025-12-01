@@ -88,7 +88,7 @@ export default function BookingContainer({ tripId, shippingFee = 0 }: Props) {
               </h2>
             </div>
             <Button asChild className="w-full">
-              <Link href="/profile/lich-su-mua-ve">Vé của bạn</Link>
+              <Link href="/profile/my-tickets">Vé của bạn</Link>
             </Button>
           </CardContent>
         </Card>
