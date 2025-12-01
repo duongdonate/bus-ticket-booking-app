@@ -9,6 +9,7 @@ function CustomerLayout({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/trips") && pathname.split("/").length >= 3;
 
   const isProfileLayout = pathname.startsWith("/profile");
+  const isPaymentResultPage = pathname === "/payment-result";
 
   if (isProfileLayout) {
     return <>{children}</>;
@@ -16,7 +17,7 @@ function CustomerLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="w-full h-full bg-background overflow-y-auto">
-      {!isBookingPage && <Header />}
+      {!isBookingPage && !isPaymentResultPage && <Header />}
       {children}
     </div>
   );

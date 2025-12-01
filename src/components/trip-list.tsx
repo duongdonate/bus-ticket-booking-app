@@ -41,7 +41,7 @@ export function TripList({
           <TripCard
             key={trip.id}
             trip={trip}
-            isActive={viewingScheduleId === trip.id}
+            isActive={true}
             onViewSchedule={onViewSchedule}
           />
         ))

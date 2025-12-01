@@ -45,8 +45,7 @@ export const useBookingStore = create<BookingState>()(
         }),
 
       cancelBooking: () => set({ selectedSeats: [], selectedTrip: null }),
-      clearBooking: () =>
-        set({ selectedSeats: [], selectedTrip: null, isBookingSuccess: true }),
+      clearBooking: () => set({ selectedSeats: [], selectedTrip: null }),
       removeSeats: (seatIds: string[]) =>
         set((state) => ({
           selectedSeats: state.selectedSeats.filter(

@@ -17,11 +17,11 @@ function PageController({
   onChangePage,
 }: PageControllerProps) {
   const [currentPage, setCurrentPage] = useState(page || 1);
-  const [allPages, setAllPages] = useState(totalPages || 1);
+  const [allPages, setAllPages] = useState(totalPages > 0 ? totalPages : 1);
 
   useEffect(() => {
     setCurrentPage(page);
-    setAllPages(totalPages);
+    setAllPages(totalPages > 0 ? totalPages : 1);
   }, [page, totalPages]);
 
   useEffect(() => {

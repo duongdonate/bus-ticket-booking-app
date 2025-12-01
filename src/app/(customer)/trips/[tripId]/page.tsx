@@ -26,26 +26,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Trip } from "@/types/Trip";
 import BookingContainer from "@/components/booking-container";
 
-const BOOKED_SEATS = ["A2", "A5", "B1", "B4", "C3"];
-const MOCK_DATA = {
-  date: "Chủ Nhật, 09/11",
-  departureTime: "08:00",
-  arrivalTime: "12:00",
-  pickupLocation: "Bến xe Vũng Tàu",
-  dropoffLocation: "Bến xe Miền Đông",
-  customerName: "Nguyễn Văn A",
-  customerPhone: "0901234567",
-  customerEmail: "nguyena@email.com",
-  warningTime: "07:30",
-};
-
-type View = "BUYING" | "SUCCESS";
-
 export default function BuyTicketPage() {
   const { tripId } = useParams();
 
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  const [view, setView] = useState<View>("BUYING");
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     type: "cancel" | "payment" | null;
@@ -66,8 +50,6 @@ export default function BuyTicketPage() {
   //   };
 
   const handleSeatClick = (seatId: string) => {
-    if (BOOKED_SEATS.includes(seatId)) return;
-
     setSelectedSeats((prev) =>
       prev.includes(seatId)
         ? prev.filter((id) => id !== seatId)
@@ -84,7 +66,6 @@ export default function BuyTicketPage() {
   };
 
   const handleConfirmPayment = () => {
-    setView("SUCCESS");
     setConfirmDialog({ isOpen: false, type: null });
   };
 
@@ -95,31 +76,6 @@ export default function BuyTicketPage() {
     const rowLabel = String.fromCharCode(65 + row); // A, B, C, D, E, F, G, H
     return `${rowLabel}${col + 1}`;
   });
-
-  if (view === "SUCCESS") {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6 text-center">
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CircleCheck className="w-10 h-10 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">
-                Chúc mừng bạn đã thanh toán thành công vé
-              </h2>
-              <p className="text-gray-600 text-sm">
-                Mã vé: {selectedSeats.join(", ")}
-              </p>
-            </div>
-            <Button asChild className="w-full">
-              <Link href="/profile/lich-su-mua-ve">Vé của bạn</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full h-full overflow-y-auto bg-background/85">

@@ -78,7 +78,11 @@ export class TripState {
   }
 }
 
-export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
+export function TripCard({
+  trip,
+  isActive = true,
+  onViewSchedule,
+}: TripCardProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
   const tabsMap = [
@@ -96,9 +100,14 @@ export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
   };
 
   return (
-    <Card className="shadow-sm hover:shadow-md hover:border-primary">
+    <Card
+      className={`shadow-sm hover:shadow-md hover:border-primary ${!isActive && "bg-background"}`}
+    >
       <CardContent className="pt-6">
         <div className="space-y-4">
+          <h3 className="w-full text-wrap text-md text-primary">
+            Operated by trip.operatorName
+          </h3>
           {/* Trip Header */}
           <div className="w-full flex items-start">
             {/* Departure & Arrival Info */}
@@ -196,11 +205,19 @@ export function TripCard({ trip, isActive, onViewSchedule }: TripCardProps) {
           </Tabs>
 
           {/* Select Button */}
-          <div className="flex justify-end">
-            <Button onClick={handleSelectTrip} variant={"default"}>
-              Xem Chi Tiết
-            </Button>
-          </div>
+          {isActive ? (
+            <div className="flex justify-end">
+              <Button onClick={handleSelectTrip} variant={"default"}>
+                Xem Chi Tiết
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-end">
+              <span className="text-md text-muted-foreground font-medium">
+                CHUYẾN ĐI CHƯA HOẠT ĐỘNG
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

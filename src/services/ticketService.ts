@@ -1,12 +1,16 @@
 import { create } from "zustand";
 import { axiosPrivate, axiosPublic } from "@/lib/axiosClient";
+import { Ticket, TicketStatus } from "@/types/Ticket";
+
+export interface SeatAPIRequest {
+  tripId: string;
+  deckId: string;
+  selectedSeat: string;
+}
 
 export const ticketApi = {
-  bookTickets: (data: {
-    tripId: string;
-    deckId: string;
-    selectedSeat: string;
-  }) => axiosPrivate.post("/tickets", data),
+  bookTickets: (data: { bookingSeats: SeatAPIRequest[] }) =>
+    axiosPrivate.post("/tickets", data),
 
   // Do page query here bắt đầu từ 0
   getAllTickets: (page: any, size: any) => {
@@ -18,7 +22,9 @@ export const ticketApi = {
     });
   },
 
-  getTicketById: (id: string) => axiosPrivate.get(`/tickets/${id}`),
+  getTicketById: (id: string) => axiosPrivate.get<Ticket>(`/tickets/${id}`),
   getQRCode: (id: string) =>
     axiosPrivate.get(`/tickets/${id}/qrcodes`, { responseType: "blob" }),
+  validateTicket: (id: string, method: string) =>
+    axiosPrivate.post(`/ticket-validations`, { id: id, method: method }),
 };

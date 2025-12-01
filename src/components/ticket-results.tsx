@@ -33,7 +33,10 @@ export function TicketResult({
     field: keyof Filters,
     value: string | Date | undefined
   ) => {
-    setFilters((prev) => ({ ...prev, [field]: value }));
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [field]: value,
+    }));
   };
 
   const handleReset = () => {
@@ -44,6 +47,10 @@ export function TicketResult({
       status: "all",
     });
   };
+
+  useEffect(() => {
+    console.log("Current Filters:", filters);
+  }, [filters]);
 
   const filteredTickets = useMemo(() => {
     if (!tickets || tickets.length === 0) return [];

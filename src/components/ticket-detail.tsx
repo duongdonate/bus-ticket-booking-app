@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ticketApi } from "@/services/ticketService";
 import { useState, useEffect } from "react";
 import { TicketState } from "./ticket-table";
+import { Ticket, TicketStatus } from "@/types/Ticket";
 
 interface TicketDetailModalProps {
   isOpen: boolean;
@@ -34,10 +35,14 @@ export function TicketDetailModal({
     queryKey: ["my-ticket-detail", ticketId],
     queryFn: async () => {
       // Gọi hai API song song
-      const [ticketDetail, QRCode] = await Promise.all([
-        ticketApi.getTicketById(ticketId), // API 1
-        ticketApi.getQRCode(ticketId), // API 2
-      ]);
+      const ticketDetail = await ticketApi.getTicketById(ticketId);
+
+      const isQRCodeActive =
+        ticketDetail.data.status === TicketStatus.PURCHASED;
+      if (!isQRCodeActive) {
+        return { ticketDetail, QRCode: null };
+      }
+      const QRCode = await ticketApi.getQRCode(ticketId);
 
       // Kết hợp kết quả
       return { ticketDetail, QRCode };
@@ -47,13 +52,18 @@ export function TicketDetailModal({
 
   const [ticketData, setTicketData] = useState<TicketState | null>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
+
   useEffect(() => {
-    if (data) {
+    if (data?.ticketDetail) {
       setTicketData(new TicketState(data?.ticketDetail.data));
+    }
+    if (data?.QRCode) {
       // Tạo URL cho QRCode từ blob
       const qrCodeBlob = data.QRCode.data;
       const url = URL.createObjectURL(qrCodeBlob);
       setQrCodeUrl(url);
+    } else {
+      setQrCodeUrl("");
     }
     console.log("Fetched Ticket Detail Data:", ticketData);
   }, [data]);
@@ -130,9 +140,11 @@ export function TicketDetailModal({
           <p className="text-sm text-gray-600 font-normal mt-1">
             Mã vé: <span className="font-semibold">{ticketId}</span>
           </p>
-          <div className="size-64 overflow-hidden border-2 border-dashed p-2">
-            <img src={qrCodeUrl} alt="qrcode" />
-          </div>
+          {qrCodeUrl && (
+            <div className="size-64 overflow-hidden border-2 border-dashed p-2">
+              <img src={qrCodeUrl} alt="qrcode" />
+            </div>
+          )}
         </div>
         <DialogFooter className="flex gap-2">Footer</DialogFooter>
       </DialogContent>

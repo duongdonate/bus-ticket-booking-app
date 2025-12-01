@@ -35,12 +35,6 @@ export function TicketFilters({
   onReset,
   isLoading = false,
 }: TicketFiltersProps) {
-  const [filters, setFilters] = useState(filtersData);
-
-  useEffect(() => {
-    setFilters(filtersData);
-  }, [filters, filtersData]);
-
   const handleReset = () => {
     onReset();
   };
@@ -59,7 +53,7 @@ export function TicketFilters({
           <Input
             id="ticketId"
             placeholder="Nhập Mã vé"
-            value={filters.ticketId}
+            value={filtersData.ticketId}
             onChange={(e) => onFilterChange("ticketId", e.target.value)}
             className="h-10 text-sm border-gray-300"
           />
@@ -69,7 +63,7 @@ export function TicketFilters({
           <Input
             id="routeName"
             placeholder="Nhập tuyến đường"
-            value={filters.routeName}
+            value={filtersData.routeName}
             onChange={(e) => onFilterChange("routeName", e.target.value)}
             className="h-10 text-sm border-gray-300"
           />
@@ -78,7 +72,7 @@ export function TicketFilters({
         <FormItem label="Thời gian đặt vé" htmlFor="date" key={"date"}>
           <DatePicker
             id="date"
-            value={filters.date}
+            value={filtersData.date}
             onChange={(date) => onFilterChange("date", date)}
           />
         </FormItem>
@@ -90,7 +84,7 @@ export function TicketFilters({
               { label: "Tất cả", value: "all" },
               { label: "Đã mua", value: TicketStatus.PURCHASED.toString() },
             ]}
-            value={filters.status}
+            value={filtersData.status}
             onChange={(value) => onFilterChange("status", value)}
           ></Selector>
         </FormItem>

@@ -263,9 +263,11 @@ export function TicketTable({
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <span className="text-lg text-card-foreground mb-2 block font-semibold">
-          Hiển thị {showIndexTable} trên {totalTickets} vé
-        </span>
+        {totalTickets !== 0 && (
+          <span className="text-lg text-card-foreground mb-2 block font-semibold">
+            Hiển thị: {showIndexTable} / {totalTickets} vé
+          </span>
+        )}
       </div>
       <div className="border border-gray-200 rounded-xl overflow-hidden">
         <div className="max-h-[50vh] overflow-x-auto overflow-y-auto">

@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { tripApi } from "@/services/tripService";
-import { ticketApi } from "@/services/ticketService";
+import { ticketApi, SeatAPIRequest } from "@/services/ticketService";
 import { SeatMapState } from "@/components/trip-seat-map";
 import { SeatMap } from "@/types/Seat";
+import { useRouter } from "next/navigation";
 
 export const useBookingSeat = (tripId: string) => {
   const queryClient = useQueryClient();
@@ -67,24 +68,26 @@ export const useBookingSeat = (tripId: string) => {
   // 5. Mutation: Xử lý Mua vé
   const bookingMutation = useMutation({
     mutationFn: async (payload: { tripId: string; selectedSeats: any }) => {
-      // Biến đổi danh sách ghế thành danh sách các Promise gọi API
-      const promises = payload.selectedSeats.map((seat: any) => {
-        return ticketApi.bookTickets({
-          tripId: payload.tripId,
-          deckId: seat.deckId,
-          selectedSeat: seat.position,
-        });
-      });
+      // Biến đổi selectedSeat + tripId thành định dạng API yêu cầu
+      const bookingSeats: SeatAPIRequest[] = payload.selectedSeats.map(
+        (seat: any) => {
+          return {
+            tripId: payload.tripId,
+            deckId: seat.deckId,
+            selectedSeat: seat.position,
+          };
+        }
+      );
 
-      // Gửi tất cả request cùng lúc và chờ tất cả xong
-      // Nếu 1 cái thất bại -> Promise.all sẽ throw lỗi ngay (Xem phần lưu ý bên dưới để xử lý kỹ hơn)
-      return Promise.all(promises);
+      return await ticketApi.bookTickets({ bookingSeats });
     },
     onSuccess: (data) => {
-      console.log("Đặt vé thành công!");
+      const paymentUrl = data.data;
+      window.location.href = paymentUrl;
       clearBooking(); // Reset store
       queryClient.invalidateQueries({ queryKey: ["trip-seats", tripId] }); // Refresh lại sơ đồ ghế ngay lập tức
       // Redirect hoặc mở modal success ở đây
+      // Giả sử trả về URL thanh toán từ vé đầu tiên
     },
     onError: (error: any) => {
       console.error(
