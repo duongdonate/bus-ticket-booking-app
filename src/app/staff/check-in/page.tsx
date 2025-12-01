@@ -4,8 +4,8 @@ import { useState } from "react";
 import { X, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
-import QRScannerCard from "./qr-scanner";
-import TicketDetailsModal from "./ticket-details-modal";
+import QRScannerCard from "../../../components/staff/qr-scanner";
+import TicketDetailsModal from "../../../components/staff/ticket-details-modal";
 
 type ScanState = "ready" | "valid" | "invalid";
 
@@ -105,19 +105,17 @@ export default function StaffCheckInPage() {
       <div className="flex flex-col max-w-md mx-auto px-4 py-4">
         {/* Status & Action Area (60% height) */}
         <div className="h-[60%] flex-1 flex flex-col w-full">
-          <QRScannerCard
-            onViewDetails={() => setShowModal(true)}
-          />
+          <QRScannerCard onViewDetails={() => setShowModal(true)} />
         </div>
       </div>
 
       {/* Ticket Details Modal */}
-      {ticketData && (
+      {showModal && (
         <TicketDetailsModal
           open={showModal}
           onOpenChange={setShowModal}
-          ticketData={ticketData}
-          isInvalid={scanState === "invalid"}
+          //ticketData={ticketData}
+          //isInvalid={scanState === "invalid"}
         />
       )}
     </div>

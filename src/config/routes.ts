@@ -19,4 +19,5 @@ export const Routes: RouteRule[] = [
   // --- User chung (Chỉ cần login là vào được, ví dụ trang profile) ---
   { path: "/profile", roles: [] },
   { path: "/staff/check-in", isPublic: true },
+  { path: "/admin", isPublic: true },
 ];

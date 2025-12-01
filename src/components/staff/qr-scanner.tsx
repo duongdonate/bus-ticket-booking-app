@@ -3,8 +3,13 @@
 import { CameraIcon, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import ScannerBox from "./scanner-box";
+import ScannerBox from "@/components/staff/scanner-box";
 import useToast from "@/hooks/useToast";
+import { Ticket, TicketStatus, TicketValidationStatus } from "@/types/Ticket";
+import {
+  useValidationTicket,
+  ValidateTicketProps,
+} from "@/hooks/useValidationTicket";
 
 interface TicketData {
   code: string;
@@ -21,7 +26,12 @@ interface QRScannerCardProps {
   onViewDetails: () => void;
 }
 
-export const parseQRData = (decodedText: string): TicketData | null => {
+interface TicketDataQRCode {
+  ticketId: string;
+  selectedSeat: string;
+}
+
+export const parseQRData = (decodedText: string): TicketDataQRCode | null => {
   if (!decodedText) return null;
 
   // 1. Tìm vị trí của dấu gạch ngang cuối cùng
@@ -43,38 +53,44 @@ export const parseQRData = (decodedText: string): TicketData | null => {
   const ticketClass = decodedText.substring(lastHyphenIndex + 1);
 
   return {
-    code: ticketId,
-    class: ticketClass,
+    ticketId: ticketId,
+    selectedSeat: ticketClass,
   };
 };
 
 export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
-  const toast = useToast();
-  const [state, setState] = useState<"ready" | "valid" | "invalid">("ready");
+  const { validationStatus, validateTicket, ticketId, resetValidation } =
+    useValidationTicket();
   const [isCameraActive, setIsCameraActive] = useState(false); // State bật/tắt cam
-  const [ticketData, setTicketData] = useState<TicketData | null>(null);
+  const [ticketInfo, setTicketInfo] = useState<TicketDataQRCode | null>(null);
+  //const [ticketData, setTicketData] = useState<TicketData | null>(null);
 
   // Hàm xử lý khi quét được QR
   const handleScan = (decodedText: string) => {
-    setIsCameraActive(false); // Tắt cam ngay sau khi quét được
-    toast?.showToast("Đã quét: " + decodedText);
+    //setIsCameraActive(false); // Tắt cam ngay sau khi quét được
 
     try {
-      const ticketInfo = parseQRData(decodedText);
+      setTicketInfo(parseQRData(decodedText));
       if (ticketInfo) {
         // Giả lập kiểm tra vé hợp lệ hay không
-        setState("valid");
-        setTicketData(ticketInfo);
+        const { ticketId, selectedSeat } = ticketInfo;
+        validateTicket({ ticketId, method: "MANUAL" } as ValidateTicketProps);
       } else {
         throw new Error("Sai định dạng");
       }
     } catch (e) {
       // Toast lỗi ở đây
+
       console.error(e);
     }
   };
 
-  if (state === "ready") {
+  const handleReset = () => {
+    setTicketInfo(null);
+    resetValidation();
+  };
+
+  if (validationStatus === TicketValidationStatus.ALREADY_USED) {
     return (
       <div className="flex-1 bg-card rounded-3xl p-6 flex flex-col justify-between space-y-4 drop-shadow-xl border border-gray-100">
         {/* Phần Header thông tin Ticket */}
@@ -135,7 +151,7 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
     );
   }
 
-  if (state === "valid") {
+  if (validationStatus === TicketValidationStatus.VALID) {
     return (
       <div className="flex-1 bg-emerald-50 dark:bg-emerald-950/30 rounded-3xl p-6 flex flex-col justify-between overflow-y-auto shadow-xl">
         <div className="space-y-4">
@@ -152,42 +168,36 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
             <div>
               <p className="text-xs text-muted-foreground">Mã vé</p>
               <p className="text-base font-semibold text-foreground">
-                {ticketData?.code}
+                {ticketInfo?.ticketId}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Hạng vé</p>
               <p className="text-base font-semibold text-foreground">
-                {ticketData?.class}
+                {ticketInfo?.selectedSeat}
               </p>
             </div>
           </div>
 
-          <p className="text-center text-sm font-medium text-emerald-700 dark:text-emerald-300">
-            Vé tham dự
+          <p className="text-center text-md font-medium text-emerald-700 dark:text-emerald-300">
+            Vé hợp lệ
           </p>
         </div>
 
         <div className="space-y-2 mt-4">
           <Button
-            //onClick={onCheckIn}
-            className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+            onClick={() => handleReset()}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             Check-in
           </Button>
           <Button
-            //onClick={onRefresh}
-            variant="outline"
-            className="w-full bg-transparent"
-          >
-            Refresh
-          </Button>
-          <button
+            variant="link"
             //onClick={onViewDetails}
-            className="w-full text-xs text-primary hover:text-primary/80 py-2 text-center"
+            className="w-full text-xs text-secondary-foreground py-2 text-center"
           >
             Chi tiết thông tin vé
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -210,40 +220,38 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
           <div>
             <p className="text-xs text-muted-foreground">Mã vé</p>
             <p className="text-base font-semibold text-foreground">
-              {ticketData?.code}
+              {ticketInfo?.ticketId}
             </p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Hạng vé</p>
             <p className="text-base font-semibold text-foreground">
-              {ticketData?.class}
+              {ticketInfo?.selectedSeat}
             </p>
           </div>
         </div>
 
         <div className="bg-white/50 dark:bg-black/30 rounded-xl p-3">
-          <p className="text-center text-sm font-medium text-rose-700 dark:text-rose-300">
-            Lý do
-          </p>
           <p className="text-center text-sm font-semibold text-rose-600 dark:text-rose-400">
-            Đã checkin
+            Vé đã được sử dụng hoặc đã hết hạn
           </p>
         </div>
       </div>
 
       <div className="space-y-2 mt-4">
         <Button
-          //onClick={onOK}
+          onClick={() => handleReset()}
           className="w-full bg-rose-600 hover:bg-rose-700 text-white"
         >
-          OK
+          Refresh
         </Button>
-        <button
-          onClick={onViewDetails}
-          className="w-full text-xs text-primary hover:text-primary/80 py-2 text-center"
+        <Button
+          variant="link"
+          //onClick={onViewDetails}
+          className="w-full text-xs text-secondary-foreground py-2 text-center"
         >
           Chi tiết thông tin vé
-        </button>
+        </Button>
       </div>
     </div>
   );

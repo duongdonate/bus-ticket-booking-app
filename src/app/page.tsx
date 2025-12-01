@@ -24,6 +24,8 @@ export default function RootPage() {
         router.replace("/trips");
       } else if (user.roles.includes(Role.ADMIN)) {
         router.replace("/admin");
+      } else if (user.roles.includes(Role.STAFF)) {
+        router.replace("/staff/check-in");
       } else {
         // Trường hợp role lạ hoặc user mới tạo chưa có quyền
         // Có thể đẩy về trang profile hoặc thông báo lỗi

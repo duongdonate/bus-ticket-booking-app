@@ -21,8 +21,8 @@ interface TicketData {
 interface TicketDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ticketData: TicketData;
-  isInvalid: boolean;
+  ticketData?: TicketData;
+  isInvalid?: boolean;
 }
 
 export default function TicketDetailsModal({
@@ -45,47 +45,47 @@ export default function TicketDetailsModal({
             <div>
               <p className="text-xs text-muted-foreground">Mã vé</p>
               <p className="text-sm font-semibold text-foreground">
-                {ticketData.code}
+                {ticketData?.code}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-muted-foreground">Người mua</p>
               <p className="text-sm font-semibold text-foreground">
-                {ticketData.purchaserName}
+                {ticketData?.purchaserName}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-muted-foreground">Email</p>
               <p className="text-sm font-semibold text-foreground">
-                {ticketData.email}
+                {ticketData?.email}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-muted-foreground">Số điện thoại</p>
               <p className="text-sm font-semibold text-foreground">
-                {ticketData.phone}
+                {ticketData?.phone}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-muted-foreground">Thời gian mua</p>
               <p className="text-sm font-semibold text-foreground">
-                {ticketData.purchaseTime}
+                {ticketData?.purchaseTime}
               </p>
             </div>
 
-            {isInvalid && ticketData.checkInTime && (
+            {isInvalid && ticketData?.checkInTime && (
               <div className="bg-rose-50 dark:bg-rose-950/30 rounded-lg p-3 space-y-2 border border-rose-200 dark:border-rose-800">
                 <p className="text-xs text-muted-foreground">
                   Thời gian check-in
                 </p>
                 <p className="text-sm font-semibold text-rose-600 dark:text-rose-400">
-                  {ticketData.checkInTime}
+                  {ticketData?.checkInTime}
                 </p>
-                {ticketData.checkInStaff && (
+                {ticketData?.checkInStaff && (
                   <>
                     <p className="text-xs text-muted-foreground">
                       NV: Đông Nguyễn

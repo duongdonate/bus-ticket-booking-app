@@ -5,11 +5,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Check môi trường
 const isServer = typeof window === "undefined";
+if (isServer) {
+  console.log("Running on the server side");
+} else {
+  console.log("Running on the client side");
+}
 
 // --- INSTANCE 1: PUBLIC (Dùng cho Login, Signup, Forgot Password) ---
 export const axiosPublic = axios.create({
   baseURL: BASE_URL,
   headers: {
+    "ngrok-skip-browser-warning": "true", // Dòng quan trọng nhất
     "Content-Type": "application/json",
   },
 });
@@ -19,6 +25,7 @@ export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true", // Dòng quan trọng nhất
   },
   // withCredentials: true, // Bật dòng này nếu bạn dùng Cookie (HttpOnly) thay vì LocalStorage
 });
