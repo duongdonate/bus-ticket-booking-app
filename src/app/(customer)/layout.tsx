@@ -1,6 +1,7 @@
 "use client";
 import { Header } from "@/components/header";
 import { usePathname } from "next/navigation";
+import ChatWidget from "@/components/chat-widget";
 
 function CustomerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ function CustomerLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full h-full bg-background overflow-y-auto">
       {!isBookingPage && !isPaymentResultPage && <Header />}
+      <ChatWidget />
       {children}
     </div>
   );
