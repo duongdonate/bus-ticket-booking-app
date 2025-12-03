@@ -22,8 +22,8 @@ export default function RootPage() {
       // Nếu logic role phức tạp hơn, bạn có thể dùng switch-case
       if (user.roles.includes(Role.PASSENGER)) {
         router.replace("/trips");
-      } else if (user.roles.includes(Role.ADMIN)) {
-        router.replace("/admin");
+      } else if (user.roles.includes(Role.OPERATOR)) {
+        router.replace("/operator/dashboard");
       } else if (user.roles.includes(Role.STAFF)) {
         router.replace("/staff/check-in");
       } else {

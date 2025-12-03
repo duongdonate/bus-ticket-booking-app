@@ -2,4 +2,5 @@ export enum Role {
   ADMIN = "ROLE_ADMIN",
   PASSENGER = "ROLE_PASSENGER",
   STAFF = "ROLE_STAFF",
+  OPERATOR = "ROLE_OPERATOR",
 }
