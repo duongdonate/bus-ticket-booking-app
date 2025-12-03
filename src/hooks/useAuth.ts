@@ -73,7 +73,7 @@ export const useAuth = () => {
   const logout = () => {
     storeLogout();
     queryClient.clear(); // Xóa cache React Query
-    router.push("/auth/login");
+    router.push("/login");
   };
 
   return {
