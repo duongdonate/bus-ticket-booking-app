@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/services/authService";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Role } from "@/types/Role";
+import useToast from "./useToast";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -15,11 +15,19 @@ export const useAuth = () => {
     isAuthenticated,
   } = useAuthStore();
 
+  const toast = useToast();
+
   // Hàm xử lý điều hướng dựa trên Role (Tách ra cho gọn)
   const handleRedirectByRole = (role: string) => {
     switch (role) {
       case Role.ADMIN:
-        router.push("/dashboard");
+        router.push("/admin");
+        break;
+      case Role.STAFF:
+        router.push("/staff");
+        break;
+      case Role.OPERATOR:
+        router.push("/operator");
         break;
       case Role.PASSENGER:
         router.push("/trips");
@@ -62,7 +70,7 @@ export const useAuth = () => {
     mutationFn: authApi.signup,
     onSuccess: () => {
       console.info("Đăng ký thành công! Vui lòng đăng nhập.");
-      router.push("/auth/login");
+      router.push("/login");
     },
     onError: (error: any) => {
       console.error(error.response?.data?.error || "Đăng ký thất bại");

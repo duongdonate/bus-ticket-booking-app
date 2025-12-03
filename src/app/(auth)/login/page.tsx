@@ -39,7 +39,7 @@ const PageLogin = () => {
   // };
 
   return (
-    <div className="mt-16 h-max rounded-2xl bg-card p-10 shadow-2xl w-full max-w-md">
+    <div className="z-20 mt-16 h-max rounded-2xl bg-card p-10 shadow-2xl w-full max-w-md">
       <Image
         src={Logo}
         alt="Logo"

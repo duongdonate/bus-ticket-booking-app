@@ -5,6 +5,7 @@ export interface User {
   firstname: string;
   lastname: string;
   email: string;
+  phone: string;
   roles: Role[];
   // Thêm các field khác nếu cần
 }

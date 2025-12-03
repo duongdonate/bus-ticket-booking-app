@@ -8,6 +8,8 @@ import { FormItem } from "@/components/ui/form-item";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { ContactRound, SquareAsterisk, UserRound } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import useToast from "@/hooks/useToast";
 
 // Định nghĩa các biến thể animation (Variants)
 const slideVariants: Variants = {
@@ -34,6 +36,8 @@ const slideVariants: Variants = {
 };
 
 const PageSignUp = () => {
+  const { register, isRegistering } = useAuth();
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState("step-1");
   const [formData, setFormData] = useState({
     email: "",
@@ -41,7 +45,10 @@ const PageSignUp = () => {
     lastname: "",
     username: "",
     password: "",
+    phone: "",
   });
+
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,7 +56,12 @@ const PageSignUp = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Dữ liệu gửi API:", formData);
+    console.log("Dữ liệu gửi API SignUp:", formData);
+    if (formData.password !== confirmPassword) {
+      toast?.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    register(formData);
   };
 
   const handleNext = (nextStep: string) => {
@@ -64,7 +76,7 @@ const PageSignUp = () => {
   // Hàm chuyển đổi tên tab thành số (để dễ dàng quản lý)
   const stepNumber = parseInt(activeTab.split("-")[1]);
   return (
-    <div className="mt-8 h-max rounded-2xl bg-card py-10 px-8 shadow-2xl w-full max-w-lg">
+    <div className="z-20 mt-8 h-max rounded-2xl bg-card py-10 px-8 shadow-2xl w-full max-w-lg">
       <h2 className="mb-10 text-center text-2xl font-semibold text-card-foreground">
         Tạo Tài Khoản Mới
       </h2>
@@ -154,6 +166,13 @@ const PageSignUp = () => {
                   onChange={handleChange}
                   placeholder="Email"
                 />
+                <Input
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Phone Number"
+                />
 
                 <div className="flex gap-3 pt-2">
                   <Button
@@ -172,7 +191,7 @@ const PageSignUp = () => {
               </motion.div>
             )}
 
-            {/* Step 3: USERNAME & PASS */}
+            {/* Step 3: PASS */}
             {activeTab === "step-3" && (
               <motion.div
                 key="step3" // Key duy nhất
@@ -198,7 +217,8 @@ const PageSignUp = () => {
                     name="confirm-password"
                     type="password"
                     placeholder="Confirm Password"
-                    onChange={handleChange}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </FormItem>
 
@@ -210,7 +230,7 @@ const PageSignUp = () => {
                     Back
                   </Button>
                   <Button className="flex-1" onClick={handleSubmit}>
-                    Create Account
+                    {isRegistering ? "Đang đăng ký..." : "Đăng ký ngay"}
                   </Button>
                 </div>
               </motion.div>
