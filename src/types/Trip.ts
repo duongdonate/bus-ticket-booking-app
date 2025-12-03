@@ -8,6 +8,8 @@ export interface Trip {
   basePrice: number;
   totalAvailableSeats?: number | null;
   busTypeId?: string;
+  operatorId?: string;
+  operatorName?: string;
 }
 
 export interface PageResponse<T> {

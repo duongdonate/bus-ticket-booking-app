@@ -169,7 +169,7 @@ export default function BookingContainer({ tripId, shippingFee = 0 }: Props) {
                     <Phone className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
                     <Input
                       id="phone"
-                      defaultValue={user?.email}
+                      defaultValue={user?.phone}
                       className="pl-10"
                     />
                   </div>

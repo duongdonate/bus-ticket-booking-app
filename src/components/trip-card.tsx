@@ -24,7 +24,9 @@ export class TripState {
   arrivalLocation: string;
   duration: number; // in minutes
   totalAvailableSeats: number;
-  price: number;
+  price?: number;
+  operatorId?: string;
+  operatorName?: string;
 
   constructor({
     id,
@@ -35,6 +37,8 @@ export class TripState {
     destination,
     totalAvailableSeats,
     basePrice,
+    operatorId = "",
+    operatorName = "",
   }: Trip) {
     this.id = id;
     this.routeName = routeName;
@@ -47,6 +51,8 @@ export class TripState {
     ); // convert ms to minutes
     this.totalAvailableSeats = totalAvailableSeats || 0;
     this.price = basePrice; // Placeholder, replace with actual price if available
+    this.operatorId = operatorId;
+    this.operatorName = operatorName;
   }
   get durationString() {
     const hours = Math.floor(this.duration / 60);
@@ -71,6 +77,8 @@ export class TripState {
   }
 
   get priceString() {
+    if (!this.price) return "Liên hệ";
+
     return this.price.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -106,7 +114,7 @@ export function TripCard({
       <CardContent className="pt-6">
         <div className="space-y-4">
           <h3 className="w-full text-wrap text-md text-primary">
-            Operated by trip.operatorName
+            {tripState?.operatorName}
           </h3>
           {/* Trip Header */}
           <div className="w-full flex items-start">

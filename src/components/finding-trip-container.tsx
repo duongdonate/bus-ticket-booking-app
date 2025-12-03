@@ -24,7 +24,7 @@ export default function FindingTripContainer({
   const { data, isLoading, isError } = useQuery({
     queryKey: ["published-trips", searchParams],
     queryFn: () => tripApi.getPublishedTrips(searchParams),
-    //enabled: Object.keys(searchParams).length > 0, // Chỉ chạy khi searchParams không rỗng
+    enabled: Object.keys(searchParams).length > 0,
   });
 
   useEffect(() => {

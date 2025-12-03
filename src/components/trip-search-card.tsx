@@ -16,11 +16,11 @@ import { Selector } from "@/components/selector";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const optionsLocation = [
-  { label: "Sài Gòn", value: "SaGo" },
-  { label: "Vũng Tàu", value: "VuTa" },
-  { label: "Đà Lạt", value: "DaLa" },
-  { label: "Phú Yên", value: "PuYe" },
-  { label: "Đà Nẵng", value: "DaNa" },
+  { label: "Sài Gòn", value: "Sài Gòn" },
+  { label: "Vũng Tàu", value: "Vũng Tàu" },
+  { label: "Đà Lạt", value: "Đà Lạt" },
+  { label: "Phú Yên", value: "Phú Yên" },
+  { label: "Đà Nẵng", value: "Đà Nẵng" },
 ];
 
 const optionsPassenger = [
@@ -34,24 +34,20 @@ const optionsPassenger = [
 export function TripSearchCard() {
   const router = useRouter();
 
-  const [tripType, setTripType] = useState("one-way");
   const [departure, setDeparture] = useState("");
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [passengers, setPassengers] = useState("1");
 
-  const recentSearches = [
-    "Vũng Tàu - Sài Gòn",
-    "Sài Gòn - Vũng Tàu",
-    "Hà Nội - Sài Gòn",
-  ];
+  const isSearchEnabled = departure && destination;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
 
+    const routeName =
+      departure && destination ? departure + " - " + destination : "";
     // Gán các giá trị vào params
-    params.set("departurePoint", departure);
-    params.set("destination", destination);
+    params.set("routeName", departure + " - " + destination);
 
     if (date) {
       params.set("departureDate", format(date, "yyyy-MM-dd"));
@@ -60,12 +56,6 @@ export function TripSearchCard() {
     if (passengers) {
       params.set("numTickets", passengers);
     }
-
-    // Luôn reset về trang 1 khi tìm kiếm mới
-    params.set("page", "1");
-
-    // Params phụ (có thể backend không dùng để lọc nhưng frontend cần để hiển thị lại UI)
-    params.set("tripType", tripType);
 
     // 4. Đẩy lên URL -> Next.js sẽ bắt sự kiện này ở page.tsx -> Trigger fetch data
     // scroll: false để giữ vị trí màn hình, không bị nhảy lên đầu trang
@@ -81,28 +71,6 @@ export function TripSearchCard() {
     <Card className="mb-8">
       <CardContent className="pt-6">
         <div className="space-y-6">
-          {/* Trip Type Radio Group */}
-          <RadioGroup value={tripType} onValueChange={setTripType}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="one-way" id="one-way" />
-              <Label
-                htmlFor="one-way"
-                className={`cursor-pointer ${tripType === "one-way" ? "text-primary" : ""}`}
-              >
-                Một chiều
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="round-trip" id="round-trip" />
-              <Label
-                htmlFor="round-trip"
-                className={`cursor-pointer ${tripType === "round-trip" ? "text-primary" : ""}`}
-              >
-                Khứ hồi
-              </Label>
-            </div>
-          </RadioGroup>
-
           {/* Search Inputs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
             {/* Departure & Destination */}
@@ -115,7 +83,7 @@ export function TripSearchCard() {
                   options={optionsLocation}
                   value={departure}
                   onChange={setDeparture}
-                  placeholder="Chọn quốc gia"
+                  placeholder="Chọn địa điểm"
                 />
               </div>
               {/* Swap Button */}
@@ -138,7 +106,7 @@ export function TripSearchCard() {
                   options={optionsLocation}
                   value={destination}
                   onChange={setDestination}
-                  placeholder="Chọn quốc gia"
+                  placeholder="Chọn địa điểm"
                 />
               </div>
             </div>
@@ -162,28 +130,13 @@ export function TripSearchCard() {
             </div>
           </div>
 
-          {/* Recent Searches */}
-          <div className="pt-4 border-t">
-            <p className="text-sm font-medium mb-3">Tìm kiếm gần đây</p>
-            <div className="flex flex-wrap gap-2">
-              {recentSearches.map((search, idx) => (
-                <Button
-                  key={idx}
-                  variant="outline"
-                  onClick={() => {
-                    const [dept, dest] = search.split(" - ");
-                    setDeparture(dept);
-                    setDestination(dest);
-                  }}
-                >
-                  {search}
-                </Button>
-              ))}
-            </div>
-          </div>
-
           {/* Search Button */}
-          <Button onClick={handleSearch} className="w-full" size="lg">
+          <Button
+            disabled={!isSearchEnabled}
+            onClick={handleSearch}
+            className="w-full"
+            size="lg"
+          >
             Tìm chuyến xe
           </Button>
         </div>
