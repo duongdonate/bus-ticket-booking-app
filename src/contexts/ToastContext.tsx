@@ -5,7 +5,9 @@ import Toast, { ToastProps } from "@/components/ui/toast";
 import styles from "../components/Toast/Toast.module.css";
 
 interface ToastContextType {
-  showToast: (message: string) => void;
+  showToast: (message: string, type: "success" | "error") => void;
+  success: (message: string) => void;
+  error: (message: string) => void;
 }
 
 export const ToastContext = createContext<ToastContextType | null>(null);
@@ -13,17 +15,28 @@ export const ToastContext = createContext<ToastContextType | null>(null);
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<any[]>([]);
 
-  const showToast = useCallback((message: string) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, message }]);
-  }, []);
+  const showToast = useCallback(
+    (message: string, type: "success" | "error") => {
+      const id = Date.now();
+      setToasts((prev) => [...prev, { id, message, type }]);
+    },
+    []
+  );
+
+  const success = (message: string) => {
+    showToast(message, "success");
+  };
+
+  const error = (message: string) => {
+    showToast(message, "error");
+  };
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={{ showToast, success, error }}>
       {children}
       <div
         id="toast-container"
