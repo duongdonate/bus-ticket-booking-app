@@ -18,4 +18,5 @@ export enum TicketValidationStatus {
   VALID = "VALID",
   INVALID = "INVALID",
   ALREADY_USED = "ALREADY_USED",
+  MANUAL_CHECK = "MANUAL_CHECK",
 }

@@ -58,5 +58,9 @@ export function useValidationTicket() {
       setTicketId(null);
       setValidStatus(TicketValidationStatus.ALREADY_USED);
     },
+    manualCheck: () => {
+      setTicketId(null);
+      setValidStatus(TicketValidationStatus.MANUAL_CHECK);
+    },
   };
 }

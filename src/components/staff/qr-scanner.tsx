@@ -10,6 +10,7 @@ import {
   useValidationTicket,
   ValidateTicketProps,
 } from "@/hooks/useValidationTicket";
+import { Input } from "../ui/input";
 
 interface TicketData {
   code: string;
@@ -59,8 +60,13 @@ export const parseQRData = (decodedText: string): TicketDataQRCode | null => {
 };
 
 export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
-  const { validationStatus, validateTicket, ticketId, resetValidation } =
-    useValidationTicket();
+  const {
+    validationStatus,
+    validateTicket,
+    ticketId,
+    resetValidation,
+    manualCheck,
+  } = useValidationTicket();
   const [isCameraActive, setIsCameraActive] = useState(false); // State bật/tắt cam
   const [ticketInfo, setTicketInfo] = useState<TicketDataQRCode | null>(null);
   //const [ticketData, setTicketData] = useState<TicketData | null>(null);
@@ -96,16 +102,9 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
         {/* Phần Header thông tin Ticket */}
         <div className="space-y-4">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
-              Mã vé
+            <p className="text-lg text-muted-foreground uppercase tracking-wider">
+              QUÉT QR CHECK-IN
             </p>
-            <p className="text-lg font-bold text-foreground font-mono">--</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
-              Hạng vé
-            </p>
-            <p className="text-lg font-bold text-foreground">--</p>
           </div>
         </div>
 
@@ -146,6 +145,61 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
               Hủy bỏ
             </Button>
           )}
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => manualCheck()}
+          >
+            Nhập mã vé thủ công
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (validationStatus === TicketValidationStatus.MANUAL_CHECK) {
+    return (
+      <div className="flex-1 bg-card rounded-3xl p-6 flex flex-col justify-between space-y-4 drop-shadow-xl border border-gray-100">
+        {/* Phần Header thông tin Ticket */}
+        <div className="space-y-4">
+          <div>
+            <p className="text-lg text-muted-foreground uppercase tracking-wider">
+              NHẬP MÃ VÉ THỦ CÔNG
+            </p>
+          </div>
+        </div>
+
+        {/* Khu vực Nhập mã vé */}
+        <div className="w-full flex-1 flex flex-col justify-center items-center space-y-6">
+          <Input
+            type="text"
+            placeholder="Nhập mã vé tại đây"
+            className="w-full h-12"
+            value={ticketInfo?.ticketId || ""}
+            onChange={(e) =>
+              setTicketInfo({
+                ticketId: e.target.value,
+                selectedSeat: ticketInfo?.selectedSeat || "",
+              })
+            }
+          />
+          <div className="w-full flex flex-col space-y-3">
+            <Button
+              variant="default"
+              onClick={() =>
+                validateTicket({
+                  ticketId: ticketInfo?.ticketId as string,
+                  method: "MANUAL",
+                } as ValidateTicketProps)
+              }
+            >
+              Xác nhận
+            </Button>
+            <Button variant="secondary" onClick={() => resetValidation()}>
+              Quét QR
+            </Button>
+          </div>
         </div>
       </div>
     );
