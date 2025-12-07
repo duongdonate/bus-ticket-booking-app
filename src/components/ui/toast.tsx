@@ -19,9 +19,8 @@ export default function Toast({ id, message, type, onRemove }: ToastProps) {
 
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev <= 0 && onRemove) {
+        if (prev <= 0) {
           clearInterval(interval);
-          onRemove(id);
           return 0;
         }
         return prev - 2;

@@ -90,7 +90,7 @@ axiosPrivate.interceptors.response.use(
 
         // 2. Gọi API Refresh Token (Dùng axiosPublic để tránh bị interceptor chặn tiếp)
         // Đường dẫn này phải khớp với Controller Spring Boot của bạn
-        const response = await axiosPublic.post("/auth/refresh-token", {
+        const response = await axiosPublic.post("/auth/refresh", {
           refreshToken: refreshToken,
         });
 
