@@ -76,17 +76,16 @@ export default function QRScannerCard({ onViewDetails }: QRScannerCardProps) {
     //setIsCameraActive(false); // Tắt cam ngay sau khi quét được
 
     try {
-      setTicketInfo(parseQRData(decodedText));
-      if (ticketInfo) {
+      const { ticketId, selectedSeat } = parseQRData(decodedText) || {};
+      if (ticketId && selectedSeat) {
         // Giả lập kiểm tra vé hợp lệ hay không
-        const { ticketId, selectedSeat } = ticketInfo;
         validateTicket({ ticketId, method: "MANUAL" } as ValidateTicketProps);
+        setTicketInfo({ ticketId, selectedSeat });
       } else {
         throw new Error("Sai định dạng");
       }
     } catch (e) {
       // Toast lỗi ở đây
-
       console.error(e);
     }
   };

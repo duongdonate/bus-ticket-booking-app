@@ -61,10 +61,20 @@ function renderValueTicketFromKey(
       let statusBg = "bg-gray-100";
 
       switch (ticket.status) {
-        case "PURCHASED":
+        case TicketStatus.PURCHASED:
           statusBg = "bg-green-100";
           statusColor = "text-green-600";
           statusText = "Đã mua";
+          break;
+        case TicketStatus.FAILED:
+          statusBg = "bg-red-100";
+          statusColor = "text-red-600";
+          statusText = "Thất bại";
+          break;
+        case TicketStatus.PENDING:
+          statusBg = "bg-yellow-100";
+          statusColor = "text-yellow-600";
+          statusText = "Đang chờ";
           break;
       }
 

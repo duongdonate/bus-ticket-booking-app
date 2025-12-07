@@ -17,7 +17,7 @@ interface TripFiltersProps {
 }
 
 export function TripFilters({ filters, onFiltersChange }: TripFiltersProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const timeSlots = [
     { id: "early", label: "Sáng sớm (00:00 - 06:00)" },

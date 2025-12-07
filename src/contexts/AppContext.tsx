@@ -31,7 +31,7 @@ export default function AppProviders({
       <AuthProvider>
         <ToastProvider>{children}</ToastProvider>
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

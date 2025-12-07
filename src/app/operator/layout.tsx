@@ -55,12 +55,6 @@ export default function ProfileLayout({
       isActive: pathname === "/operator/dashboard",
     },
     {
-      label: "Quản lý vé",
-      icon: <Tickets className="size-6" />,
-      href: "/operator/tickets",
-      isActive: pathname === "/operator/tickets",
-    },
-    {
       label: "Quản lý chuyến đi",
       icon: <MapPinned className="size-6" />,
       href: "/operator/trips",
