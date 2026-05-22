@@ -1,26 +1,48 @@
+"use client";
 import React from "react";
 import { SideBar, NavItemProps } from "@/components/side-bar";
-import { Users, LayoutDashboard, Bus, Map } from "lucide-react";
+import { Users, LayoutDashboard, Bus, Map, DoorOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const adminNavItems: NavItemProps[] = [
-    {
-        href: "/admin/user-account",
-        icon: <Users className="w-5 h-5" />,
-        label: "User Management",
-    },
+  {
+    href: "/admin/user-account",
+    icon: <Users className="w-5 h-5" />,
+    label: "User Management",
+  },
 ];
 
 export default function AdminLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <div className="flex min-h-screen bg-gray-50">
-            <div className="w-64 p-4 hidden md:block">
-                <SideBar navItems={adminNavItems} />
-            </div>
-            <main className="flex-1 p-8 overflow-y-auto">{children}</main>
-        </div>
-    );
+  const { logout } = useAuth(); // Giả sử bạn có hook useAuth để quản lý xác thực
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  return (
+    <div className="w-full h-full">
+      <div className="h-full grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Sidebar - Sticky */}
+        <SideBar navItems={adminNavItems}>
+          <Button
+            variant={"destructive"}
+            className="w-full"
+            onClick={handleLogout}
+          >
+            <DoorOpen className="size-5" />
+            Đăng xuất
+          </Button>
+        </SideBar>
+        {/* Main Content */}
+        <main className="lg:col-span-3 py-4 px-6 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }
