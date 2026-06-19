@@ -70,9 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    // 4. Kiểm tra Role
-    // Giả sử user.roles là string "ROLE_PASSENGER" như data bạn đưa
-    // Nếu user.roles là mảng, logic này vẫn cần activeRule.roles.some(...)
+    // 4. Kiểm tra Role (Nếu có yêu cầu role trong rule)
     if (activeRule.roles && activeRule.roles.length > 0) {
       if (!activeRule.roles.some((role) => user.roles.includes(role))) {
         // User có login nhưng không đúng quyền -> Đá về trang chủ

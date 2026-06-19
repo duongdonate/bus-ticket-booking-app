@@ -5,7 +5,7 @@ import AppProvider from "@/contexts/AppContext";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Bus Ticket Booking Webapp",
+  title: "Bus Ticket Booking Platform",
   description:
     "A web application for booking bus tickets easily and conveniently.",
 };

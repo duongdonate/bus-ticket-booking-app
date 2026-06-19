@@ -616,7 +616,7 @@ export default function TripsPage() {
     );
   };
 
-  if (loading && trips.length === 0) return <p>Đang tải chuyến đi...</p>;
+  if (loading || trips === undefined) return <p>Đang tải chuyến đi...</p>;
 
   return (
     <div className="w-full">
