@@ -105,7 +105,7 @@ Hệ thống được thiết kế và tối ưu trải nghiệm người dùng 
    # (Thêm các biến khác nếu cần)
    ```
 
-### 3. Chạy Dự Án (Running the Project)
+4. Chạy Dự Án (Running the Project)
 
 - **Chạy ở chế độ development:** Lệnh này sẽ khởi động server tại `http://localhost:3000` với tính năng Hot-Reload.
   ```shell
